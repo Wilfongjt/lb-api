@@ -1,0 +1,17 @@
+{
+  "name": "api-hapi",
+  "version": "1.0.0",
+  "description": "hapi",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo TBD"
+  },
+  "author": "James Wilfong <wilfongjt@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.0.3",
+    "nodemon": "^2.0.6"
+  }
+}
