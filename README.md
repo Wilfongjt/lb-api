@@ -1,18 +1,12 @@
 # lb-api
 Node restful api
 
-## .env
-.env goes in the lb_api/ folder
-```
-MY_GIT_OWNERNAME=Wilfongjt
-MY_GIT_PROJECT=lb-api
-MY_BRANCH=dock_cmp
-COMMIT_MSG="Fix.Docker.Compose"
-MY_TRUNK=main
-```
-
 ## Clone
 ```
+mkdir dock_cmp
+
+cd dock_cmp/
+
 # clone
 git clone https://github.com/Wilfongjt/lb-api.git
 
