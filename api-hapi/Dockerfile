@@ -21,7 +21,7 @@ COPY . .
 EXPOSE 3000
 
 # allow browser connection to docker
-ENV HOST 0.0.0.0
+# ENV HOST 0.0.0.0
 #CMD ["node", "index.js"]
 
 #CMD ["node", "index.js", "--host", "0.0.0.0"]
