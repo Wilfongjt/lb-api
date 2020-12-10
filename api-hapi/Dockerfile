@@ -18,7 +18,7 @@ COPY . .
 
 #RUN ls
 
-EXPOSE 4000
+EXPOSE 3000
 
 # allow browser connection to docker
 ENV HOST 0.0.0.0
