@@ -1,11 +1,17 @@
 # lb-api
 Node restful api
 
+
+```
+export MY_BRANCH=<branch-name>
+
+```
+
 ## Clone
 ```
-mkdir dock_cmp
+mkdir ${MY_BRANCH}
 
-cd dock_cmp/
+cd ${MY_BRANCH}/
 
 # clone
 git clone https://github.com/Wilfongjt/lb-api.git
@@ -13,7 +19,7 @@ git clone https://github.com/Wilfongjt/lb-api.git
 # Checkout branch
 cd lb_api/
 
-git checkout -b dock_cmp
+git checkout -b ${MY_BRANCH}
 
 ```
 
@@ -30,14 +36,14 @@ docker-compose up
 ## Rebase
 ```
 cd lb-api/
-git checkout dock_cmp
+git checkout ${MY_BRANCH}
 git add .
-git commit -m "fix.docker"
+git commit -m "fix.${MY_BRANCH}"
 git checkout
 git pull origin main  
-git checkout dock_cmp
+git checkout ${MY_BRANCH}
 git branch
-git rebase dock_cmp
-git push origin "dock_cmp"
+git rebase ${MY_BRANCH}
+git push origin "${MY_BRANCH}"
 open -a safari "https://github.com/Wilfongjt/lb-api"
 ```
