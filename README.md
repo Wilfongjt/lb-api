@@ -23,8 +23,13 @@ git checkout -b ${MY_BRANCH}
 
 ```
 
-
 ## Docker
+use to verify  
+```
+docker
+```
+
+## Docker-Compose
 ```
 docker-compose down
 
