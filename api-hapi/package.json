@@ -12,7 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^20.0.3",
+    "@hapi/inert": "^6.0.3",
+    "@hapi/vision": "^6.0.1",
     "fs": "0.0.1-security",
+    "hapi-swagger": "^14.0.0",
+    "joi": "^17.3.0",
     "nodemon": "^2.0.6",
     "util": "^0.12.3"
   }
