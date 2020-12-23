@@ -4,16 +4,16 @@
 version: '3'
 services:
   api:
-    image: wilfongjt/api-hapi
+    image: wilfongjt/aad-hapi
 
     build:
-      context: ./api-hapi
+      context: ./aad-hapi
 
     command: >
       bash -c "npm install && npm install nodemon && npm run dev"
 
     volumes:
-      - ./api-hapi:/usr/src/app
+      - ./aad-hapi:/usr/src/app
 
     ports:
       - "3001:3001"
@@ -24,10 +24,12 @@ services:
     #  http://0.0.0.0:3000 |  ok        | ok         | no        |
     #  http://0.0.0.0:3001 |  no        | no         | no        |
     environment:
-      - NODE_ENV=development
-      - LB_ENV=dev
-      - LB_API_PORT=3001
-      - LB_API_HOST=0.0.0.0
+      - NODE_ENV=${NODE_ENV}
+      - LB_API_PORT=${LB_API_PORT}
+      - LB_API_HOST=${LB_API_HOST}
+      - LB_SECRET=${LB_SECRET}
+      - LB_API_TOKEN=${LB_API_TOKEN}
+      - LB_JWT_CLAIMS=${LB_JWT_CLAIMS}
 
     networks:
       - backend
