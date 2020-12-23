@@ -1,0 +1,7 @@
+# Dependency directories
+.cache
+.git
+*.md
+node_modules/
+.aws 
+.env
