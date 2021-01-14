@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "hapi",
   "main": "index.js",
+  "jest": {
+    "verbose": true,
+    "silent": false
+  },
   "scripts": {
     "dev": "nodemon --trace-warnings index.js",
     "start": "node index.js",

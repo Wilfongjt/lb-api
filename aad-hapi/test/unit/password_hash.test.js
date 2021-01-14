@@ -11,16 +11,19 @@ test('Generate password hash', () => {
 
   expect(Password.hash('secret_pass',16))
     .toEqual({
-      isValid: false
+      isValid:expect.any(Boolean),
+      message:expect.any(String)
     });
 
   expect(Password.hash('secret_pass',null))
-    .toEqual({
-      isValid: false
-    });
+  .toEqual({
+    isValid:expect.any(Boolean),
+    message:expect.any(String)
+  });
 
   expect(Password.hash('secret_pass','10'))
-    .toEqual({
-      isValid: false
-    });
+  .toEqual({
+    isValid:expect.any(Boolean),
+    message:expect.any(String)
+  });
 });

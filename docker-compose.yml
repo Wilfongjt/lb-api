@@ -4,32 +4,68 @@
 version: '3'
 services:
   api:
-    image: wilfongjt/aad-hapi
+    image: wilfongjt/api-01
 
     build:
-      context: ./aad-hapi
+      context: ./api-01
 
     command: >
-      bash -c "npm install && npm install nodemon && npm run dev"
+      sh -c "npm install && npm install nodemon && npm run dev"
 
     volumes:
-      - ./aad-hapi:/usr/src/app
+      - ./api-01:/usr/src/api
+      #- "~/.data/json_db"
 
     ports:
       - "3001:3001"
+
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - JSON_DB=${JSON_DB}
+      - JSON_DB_PORT=${JSON_DB_PORT}
+      - JSON_DB_HOST=${JSON_DB_HOST}
+      - JSON_DB_USER=${JSON_DB_USER}
+      - JSON_DB_PASSWORD=${JSON_DB_PASSWORD}
+      - JSON_DB_JWT_SECRET=${JSON_DB_JWT_SECRET}
+      - JSON_DB_JWT_CLAIMS=${JSON_DB_JWT_CLAIMS}
+
+      #- JSON_DB_GUEST=${JSON_DB_GUEST}
+      #- JSON_DB_GUEST_TOKEN=${JSON_DB_GUEST_TOKEN}
+
+      #- JSON_JWT_GUEST_TOKEN=${JSON_JWT_GUEST_TOKEN}
+      #- JSON_API_TOKEN=${JSON_API_TOKEN}
+      #- JSON_DB_JWT_SECRET=${JSON_DB_JWT_SECRET}
+
+
+#  api:
+#    image: wilfongjt/aad-hapi
+
+#    build:
+#      context: ./aad-hapi
+
+#    command: >
+#      bash -c "npm install && npm install nodemon && npm run dev"
+
+#    volumes:
+#      - ./aad-hapi:/usr/src/app
+
+#    ports:
+#      - "3001:3001"
 
     #  dockerfile          | 3000       | 3000       | 3000      | 3001
     #  docke-comp          | 3000:3000  | 3000:3001  | 3001:3000 | 3001:3001
     #  api                 | 3000       | 3001       | 3001      | 3001
     #  http://0.0.0.0:3000 |  ok        | ok         | no        |
     #  http://0.0.0.0:3001 |  no        | no         | no        |
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - LB_API_PORT=${LB_API_PORT}
-      - LB_API_HOST=${LB_API_HOST}
-      - LB_SECRET=${LB_SECRET}
-      - LB_API_TOKEN=${LB_API_TOKEN}
-      - LB_JWT_CLAIMS=${LB_JWT_CLAIMS}
+#    environment:
+#      - NODE_ENV=${NODE_ENV}
+#      - LB_API_PORT=${LB_API_PORT}
+#      - LB_API_HOST=${LB_API_HOST}
+#      - LB_SECRET=${LB_SECRET}
+#      - LB_API_TOKEN=${LB_API_TOKEN}
+#      - LB_JWT_CLAIMS=${LB_JWT_CLAIMS}
+#      - LB_BACKEND=${LB_BACKEND}
+#      - LB_CONNECTION_STR=${LB_CONNECTION_STR}
 
     networks:
       - backend

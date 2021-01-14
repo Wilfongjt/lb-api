@@ -1,0 +1,36 @@
+{
+  "name": "hapi-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "jest": {
+    "verbose": true,
+    "coverageReporters": [
+      "html"
+    ],
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+  "scripts": {
+    "dev": "nodemon --trace-warnings --exec babel-node server.js",
+    "run": "babel-node server.js",
+    "build": "babel . -d ./dist --ignore=\"node_modules\"",
+    "test": "jest --coverage"
+  },
+  "author": "James Wilfong <wilfongjt@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/node": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@hapi/hapi": "^20.0.3",
+    "dotenv": "^8.2.0"
+  }
+}
