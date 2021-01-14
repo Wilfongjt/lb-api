@@ -23,8 +23,7 @@ const hash = function(password, rounds) {
         hash: value
     };
   }catch (err) {
-    console.log('hashPassword: ' + err);
-    return { isValid: false };
+    return { isValid: false, message: err.message };
   }
 };
 exports.hash = hash;

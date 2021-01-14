@@ -1,10 +1,23 @@
 'use strict';
+exports.adopterModel = function() {
+    return {
+      displayname: "",
+      name: "",
+      password: "",
+      type: "adopter",
+      uuid: ""
+    };
+};
+
+/*
 const adopterModel = function() {
     return {
       displayname: "",
       name: "",
       password: "",
-      type: "adopter"
+      type: "adopter",
+      uuid: ""
     };
 };
 exports.adopter = adopterModel;
+*/

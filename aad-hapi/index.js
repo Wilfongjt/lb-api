@@ -97,7 +97,6 @@ const verify_claims = JSON.parse(process.env.LB_JWT_CLAIMS);
       //set up once and configure routes to trigger
 
      try {
-
        const verify_claims = Models.expected_claims();
        // Check application token signature, confirms application
        const app_artifacts = Jwt.token.decode(api_token);
@@ -133,7 +132,6 @@ const verify_claims = JSON.parse(process.env.LB_JWT_CLAIMS);
      }
    }
   });
-
 
    // Set the strategy
 
