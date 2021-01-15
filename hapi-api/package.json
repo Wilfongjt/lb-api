@@ -31,6 +31,7 @@
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.12.10",
     "@hapi/hapi": "^20.0.3",
+    "@hapi/jwt": "^2.0.1",
     "dotenv": "^8.2.0"
   }
 }
