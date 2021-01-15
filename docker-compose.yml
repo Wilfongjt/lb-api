@@ -4,30 +4,38 @@
 version: '3'
 services:
   api:
-    image: wilfongjt/api-01
+    image: lyttlebit/hapi-api
 
     build:
-      context: ./api-01
+      context: ./hapi-api
 
     command: >
-      sh -c "npm install && npm install nodemon && npm run dev"
+      sh -c "npm install && npm run dev"
+      # sh -c "npm install && npm install nodemon && npm run dev"
 
     volumes:
-      - ./api-01:/usr/src/api
-      #- "~/.data/json_db"
+      - ./hapi-api:/usr/src/api
 
     ports:
-      - "3001:3001"
+      - "${LB_API_PORT}:5555"
 
     environment:
       - NODE_ENV=${NODE_ENV}
-      - JSON_DB=${JSON_DB}
-      - JSON_DB_PORT=${JSON_DB_PORT}
-      - JSON_DB_HOST=${JSON_DB_HOST}
-      - JSON_DB_USER=${JSON_DB_USER}
-      - JSON_DB_PASSWORD=${JSON_DB_PASSWORD}
-      - JSON_DB_JWT_SECRET=${JSON_DB_JWT_SECRET}
-      - JSON_DB_JWT_CLAIMS=${JSON_DB_JWT_CLAIMS}
+      - LB_API_PORT=${LB_API_PORT}
+      - LB_API_HOST=${LB_API_HOST}
+      - LB_JWT_SECRET=${LB_JWT_SECRET}
+
+    #networks:
+    #  - lb_backend
+
+    restart: always
+      #- JSON_DB=${JSON_DB}
+      #- JSON_DB_PORT=${JSON_DB_PORT}
+      #- JSON_DB_HOST=${JSON_DB_HOST}
+      #- JSON_DB_USER=${JSON_DB_USER}
+      #- JSON_DB_PASSWORD=${JSON_DB_PASSWORD}
+      #- JSON_DB_JWT_SECRET=${JSON_DB_JWT_SECRET}
+      #- JSON_DB_JWT_CLAIMS=${JSON_DB_JWT_CLAIMS}
 
       #- JSON_DB_GUEST=${JSON_DB_GUEST}
       #- JSON_DB_GUEST_TOKEN=${JSON_DB_GUEST_TOKEN}
@@ -67,11 +75,8 @@ services:
 #      - LB_BACKEND=${LB_BACKEND}
 #      - LB_CONNECTION_STR=${LB_CONNECTION_STR}
 
-    networks:
-      - backend
 
-    restart: always
 
-networks:
-  backend:
-    driver: bridge
+#networks:
+#  lb_backend:
+#    driver: bridge

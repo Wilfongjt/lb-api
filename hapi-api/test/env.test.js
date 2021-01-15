@@ -27,6 +27,22 @@ describe('JSON Environment Vars', () => {
 - JSON_DB_GUEST=${JSON_DB_GUEST}
 - JSON_DB_GUEST_TOKEN=${JSON_DB_GUEST_TOKEN}
 */
+describe('LB Environment Vars', () => {
+
+  test('LB_API_PORT Environment Variable', () => {
+    expect(process.env.LB_API_PORT).toBeDefined();
+  })
+
+  test('LB_API_HOST Environment Variable', () => {
+    expect(process.env.LB_API_HOST).toBeDefined();
+  })
+
+  test('LB_JWT_SECRET Environment Variable', () => {
+    expect(process.env.LB_JWT_SECRET).toBeDefined();
+  })
+  
+});
+/*
 describe('JSON DB Environment Vars', () => {
 
   test('JSON_DB Environment Variable', () => {
@@ -53,3 +69,4 @@ describe('JSON DB Environment Vars', () => {
   })
 
 });
+*/

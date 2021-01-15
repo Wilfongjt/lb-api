@@ -5,7 +5,9 @@ This is an example in Node.js which use ES6 syntax (import, export ...) in both 
 - Dotenv: Environment variables
 - Nodemon: Reload autmatically
 - JWT: JSON Web Tokens
-- 
+- environment variables
+
+
 ### Dev
 
 ``` npm run dev```
@@ -110,3 +112,16 @@ if (process.env.NODE_ENV !== 'production') {
 },
 ...,
 ```
+# JWT
+```
+npm install @hapi/jwt
+```
+
+# Environment variables (.env)
+```
+# Use for Hapi (API)
+LB_API_PORT=5555
+LB_API_HOST=0.0.0.0
+LB_JWT_SECRET=PASSWORDmustBEATLEAST32CHARSLONGLONG
+```
+* LB_API_HOST only works when set to 0.0.0.0
