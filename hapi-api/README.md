@@ -125,3 +125,8 @@ LB_API_HOST=0.0.0.0
 LB_JWT_SECRET=PASSWORDmustBEATLEAST32CHARSLONGLONG
 ```
 * LB_API_HOST only works when set to 0.0.0.0
+
+# JSON Query
+```
+npm install json-query
+```
