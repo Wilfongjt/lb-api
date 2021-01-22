@@ -6,33 +6,35 @@ if (process.env.NODE_ENV !== 'production') {
   const path = require('path');
   dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 }
-
+// HAPI
 import Jwt from '@hapi/jwt';
-import { EnvConf } from './env_config.js';
 import Hapi from '@hapi/hapi';
+import Joi from 'joi';
+
+import { EnvConf } from './env_config.js';
+
 import { LbEnv } from '../lib/lb_env.js';
+// Data Client
+import DbClient from '../lib/db_client.js';
+import { UserChelate } from '../lib/chelate.js';
+import { UserAliasChelate } from '../lib/chelate.js';
+// ROUTES
+import root_route from '../routes/root_route.js';
+import restricted_route from '../routes/restricted_route.js';
+import user_route from '../routes/user_route.js';
 
 const lbEnv = new LbEnv();
 const secret = lbEnv.get('LB_JWT_SECRET');
 const port = 5555; // lbEnv.get('LB_API_PORT');
-const host = lbEnv.get('LB_API_HOST');
+const host = lbEnv.get('LB_API_HOST') ;
 
 const server = Hapi.Server({ host: host, port: port});
-// ROUTES
-// auth: false ... turn off authentication
-server.route({
-  method: 'GET',
-  path: '/',
-  handler: (req, h) => ({ message: 'Hello Hapi.js' }),
-  options: {
-       auth: false
-  }
-});
-server.route({
-  method: 'GET',
-  path: '/restricted',
-  handler: (req, h) => ({ message: 'List Hapi.js' })
-});
+
+const api_routes = [
+  root_route,
+  restricted_route,
+  user_route
+];
 
 const strategy =  function () {
   return {
@@ -43,10 +45,21 @@ const strategy =  function () {
         sub: false
     },
     validate: (artifacts, request, h) => {
-        // console.log('strategy validate fires after authorization/authentication');
+      //console.log('validate 1');
+        if (! artifacts.decoded.payload.user) {
+          return {isValid: false}
+        }
+        //console.log('validate 2');
+
+        if (! artifacts.decoded.payload.scope) {
+          return {isValid: false}
+        }
+        //console.log('validate 3', artifacts.decoded.payload.user);
+        //console.log('validate 4', artifacts.decoded.payload.scope);
+
         return {
             isValid: true,
-            credentials: { user: artifacts.decoded.payload.user }
+            credentials: { user: artifacts.decoded.payload.user, scope: artifacts.decoded.payload.scope }
         };
     }
   }
@@ -56,10 +69,11 @@ exports.init = async () => {
 
     await server.register(Jwt);
 
-    server.auth.strategy('my_jwt_stategy', 'jwt', strategy() );
+    server.auth.strategy('lb_jwt_strategy', 'jwt', strategy() );
     // verifyOptions: { algorithms: [ 'HS256' ] }
-    server.auth.default('my_jwt_stategy');
+    server.auth.default('lb_jwt_strategy');
 
+    server.route(api_routes);
     // use for testing
 
     await server.initialize();
@@ -80,12 +94,13 @@ exports.start = async () => {
 
     await server.register(Jwt);
     // set authentication strategy
-    server.auth.strategy('my_jwt_stategy', 'jwt', strategy() );
+    server.auth.strategy('lb_jwt_strategy', 'jwt', strategy() );
 
     // Set the strategy
 
-    server.auth.default('my_jwt_stategy');
+    server.auth.default('lb_jwt_strategy');
 
+    server.route(api_routes);
     // starts server for use
 
     await server.start();
