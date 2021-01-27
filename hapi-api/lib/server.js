@@ -21,7 +21,8 @@ import { UserAliasChelate } from '../lib/chelate.js';
 // ROUTES
 import root_route from '../routes/root_route.js';
 import restricted_route from '../routes/restricted_route.js';
-import user_route from '../routes/user_route.js';
+import user_route_post from '../routes/user_route_post.js';
+import user_route_put from '../routes/user_route_put.js';
 
 const lbEnv = new LbEnv();
 const secret = lbEnv.get('LB_JWT_SECRET');
@@ -33,7 +34,8 @@ const server = Hapi.Server({ host: host, port: port});
 const api_routes = [
   root_route,
   restricted_route,
-  user_route
+  user_route_post,
+  user_route_put
 ];
 
 const strategy =  function () {

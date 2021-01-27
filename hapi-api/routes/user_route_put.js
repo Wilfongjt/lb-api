@@ -2,17 +2,22 @@ import Joi from 'joi';
 import DbClient from '../lib/db_client.js';
 import { UserChelate } from '../lib/chelate.js';
 import { UserAliasChelate } from '../lib/chelate.js';
+// app-name   guest
+//   |          |
 
 module.exports = {
-  method: 'POST',
+  method: 'PUT',
   path: '/user',
   handler: function (req, h) {
-    console.log('route /user');
+    console.log('/user put 1');
     let client = new DbClient().connect();
-    //console.log('table', client.table);
-    //let chelate = new UserChelate(req.payload);
-    let insertResponse = client.insert(new UserChelate(req.payload));
-    client.insert(new UserAliasChelate(insertResponse));
+    console.log('/user put 2');
+    console.log('payload', req.payload);
+    console.log('new UserChelate(req.payload))',new UserChelate(req.payload));
+    console.log('client', client);
+    let insertResponse = client.update(new UserChelate(req.payload));
+
+console.log('/user put out');
     return '/user route';
   },
   options: {
@@ -20,7 +25,7 @@ module.exports = {
           mode: 'required',
           strategy: 'lb_jwt_strategy',
           access: {
-            scope: ['guest']
+            scope: ['app']
           }
         },
         validate: {

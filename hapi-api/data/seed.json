@@ -1,6 +1,46 @@
 {
   "table": [
     {
+      "pk": "selectchange@user.com",
+      "sk": "USER",
+      "tk": "420a5bd9-e669-41d4-b917-81212bc184a3",
+      "form": { "username": "selectchange@user.com", "displayname": "J", "password": "a1A!aaaa" },
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    },
+    {
+      "pk": "existing@user.com",
+      "sk": "USER",
+      "tk": "520a5bd9-e669-41d4-b917-81212bc184a3",
+      "form": { "username": "existing@user.com", "displayname": "J", "password": "a1A!aaaa" },
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    },
+    {
+      "pk": "existing2@user.com",
+      "sk": "USER",
+      "tk": "620a5bd9-e669-41d4-b917-81212bc184a3",
+      "form": { "username": "existing@user.com", "displayname": "J", "password": "a1A!aaaa" },
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    },
+    {
+      "pk": "delete@user.com",
+      "sk": "USER",
+      "tk": "720a5bd9-e669-41d4-b917-81212bc184a3",
+      "form": { "username": "delete@user.com", "displayname": "J", "password": "a1A!aaaa" },
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    },
+    {
+      "pk": "update@user.com",
+      "sk": "USER",
+      "tk": "820a5bd9-e669-41d4-b917-81212bc184a3",
+      "form": { "username": "update@user.com", "displayname": "J", "password": "a1A!aaaa" },
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    },
+    {
       "pk": "woden@citizenlabs.org",
       "sk": "profile#woden@citizenlabs.org",
       "data": "woden",

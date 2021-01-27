@@ -16,7 +16,7 @@ describe('Chelate', () => {
   // Initialize
   test('new UserChelate', () => {
    let form = {
-     "username":"abc xyz",
+     "username":"abc@xyz.com",
       "displayname":"abc",
       "password":"a1A!aaaa"
     };
@@ -27,7 +27,7 @@ describe('Chelate', () => {
   test('toJson UserChelate', () => {
    //let dataTypes = new DataTypes();
    let form = {
-     "username":"abc xyz",
+     "username":"abc@xyz.com",
       "displayname":"abc",
       "password":"a1A!aaaa"
     };
@@ -41,7 +41,7 @@ describe('Chelate', () => {
   test('Form to UserChelate', () => {
    //let dataTypes = new DataTypes();
    let form = {
-     "username":"abc xyz",
+     "username":"abc@xyz.com",
       "displayname":"abc",
       "password":"a1A!aaaa"
     };
@@ -49,10 +49,9 @@ describe('Chelate', () => {
     let chelate = new UserChelate(form)
 
     //expect(chelate.get('pk')).toMatch(/^[0-9A-F]{8}-[0-9A-F]{4}-[5][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
-    expect(chelate.get('pk')).toMatch(new RegExp(Consts.guidPattern(),'i'));
-
+    expect(chelate.get('pk')).toMatch(new RegExp(Consts.emailPattern(),'i') );
     expect(chelate.get('sk')).toEqual(DataTypes.userType());
-    expect(chelate.get('data')).toEqual(DataTypes.userType());
+    expect(chelate.get('tk')).toMatch(new RegExp(Consts.guidPattern(),'i') );
     expect(chelate.get('created')).toBeDefined();
     expect(chelate.get('updated')).not.toBeDefined();
     expect(chelate.get('form')).toBeDefined();
@@ -63,22 +62,21 @@ describe('Chelate', () => {
   test('value wrapper assignments to UserChelate', () => {
 
     let wrap = {
-       "pk": "421b79c7-38dd-432c-b0a2-17d05c1f9aea",
+       "pk": "abc@xyz.com",
        "sk": 'USER',
-       "data": "USER",
+       "tk": "421b79c7-38dd-432c-b0a2-17d05c1f9aea",
        "form": {
-          "username":"abc xyz",
+          "username":"abc@xyz.com",
           "displayname":"abc",
           "password":"a1A!aaaa"
        },
        "created": "2020-12-13T16:04:14.094073"
      }
     let chelate = new UserChelate(wrap);
-
-    expect(chelate.get('pk')).toMatch(new RegExp(Consts.guidPattern(),'i'));
-
+    expect(chelate.get('pk')).toMatch(new RegExp(Consts.emailPattern(),'i'));
     expect(chelate.get('sk')).toEqual(DataTypes.userType());
-    expect(chelate.get('data')).toEqual(DataTypes.userType());
+    expect(chelate.get('tk')).toMatch(new RegExp(Consts.guidPattern(),'i'));
+
     expect(chelate.get('created')).toBeDefined();
     expect(chelate.get('updated')).not.toBeDefined();
     expect(chelate.get('form')).toBeDefined();
@@ -91,11 +89,11 @@ describe('Chelate', () => {
    let response = {
     "isValid": true,
     "result": {
-       "pk": "421b79c7-38dd-432c-b0a2-17d05c1f9aea",
+       "pk": "abc@xyz.com",
        "sk": 'USER',
-       "data": "USER",
+       "tk": "421b79c7-38dd-432c-b0a2-17d05c1f9aea",
        "form": {
-          "username":"abc xyz",
+          "username":"abc@xyz.com",
           "displayname":"abc",
           "password":"a1A!aaaa"
        },
@@ -106,9 +104,11 @@ describe('Chelate', () => {
     let chelate = new UserChelate(response);
 
     expect(chelate.get('form')).not.toEqual({});
-    expect(chelate.get('pk')).toMatch(new RegExp(Consts.guidPattern(),'i'));
+
+    expect(chelate.get('pk')).toMatch(new RegExp(Consts.emailPattern(),'i'));
     expect(chelate.get('sk')).toEqual(DataTypes.userType());
-    expect(chelate.get('data')).toEqual(DataTypes.userType());
+    expect(chelate.get('tk')).toMatch(new RegExp(Consts.guidPattern(),'i'));
+
     expect(chelate.get('created')).toBeDefined();
     expect(chelate.get('updated')).not.toBeDefined();
     expect(chelate.get('form')).toBeDefined();

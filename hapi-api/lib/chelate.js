@@ -7,7 +7,7 @@ export class Chelate extends Map {
     let _datetime = new Date();
     this.set("pk","");
     this.set("sk","");
-    this.set("data","");
+    this.set("tk","");
     this.set("form",{});
     this.set("active", true);
     this.set("created",_datetime);
@@ -58,6 +58,48 @@ export class Chelate extends Map {
 /*
 
 */
+export class UserChelate extends Chelate {
+  constructor (form) {
+    super();
+    ///this.set('dups', false);
+
+    if( form.isValid ) { // from response from insert or update
+      // get result.form
+      this.set('pk',form.result.pk);
+      this.set('sk',form.result.sk);
+      this.set('tk',form.result.tk);
+      this.set('form',JSON.parse(JSON.stringify(form.result.form)));
+      this.set('created', form.result.created);
+      if (form.result.updated) {
+        this.set('updated', form.result.updated);
+      }
+    } else if ( form.pk ) { // wrap
+
+      this.set('pk',form.pk);
+      this.set('sk',form.sk);
+      this.set('tk',form.tk);
+      this.set('form',JSON.parse(JSON.stringify(form.form)));
+      this.set('created', form.created);
+      if (form.updated) {
+        this.set('updated', form.updated);
+      }
+
+    } else if ( form.username ) { // straight user-form
+
+      this.set("pk", form.username);
+      this.set("sk", DataTypes.userType());
+      this.set("tk", uuidv4());
+
+      this.set("form", JSON.parse(JSON.stringify(form)));
+    }
+  }
+
+  setForm(form){
+    this.set('form', form);
+    return this;
+  }
+}
+/*
 export class UserChelate extends Chelate {
   constructor (form) {
     super();
@@ -112,6 +154,7 @@ export class UserAliasChelate extends Chelate {
       if (item.result.updated) {
         this.set('updated', item.result.updated);
       }
+      */
     /*} else if ( item.pk ){ // user-chelate
       // get
       this.set('pk',item.pk);
@@ -123,5 +166,7 @@ export class UserAliasChelate extends Chelate {
         this.set('updated', item.updated);
       }
     }*/
+    /*
   }
 }
+*/
