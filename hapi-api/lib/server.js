@@ -107,7 +107,21 @@ exports.start = async () => {
 
     await server.start();
 
-    console.log(`Server running at: ${server.info.uri}`);
+    //console.log(server.table());
+    //const routes = [];
+    /*
+    server.table().forEach((route) => {
+      routes.push({"method": `${route.method}`,"route":`http://${process.env.LB_API_HOST}:${process.env.LB_API_PORT}${route.path}`, "form": {}});
+    });
+    */
+    //console.log('routes', routes);
+    //console.log(`Server running at: ${server.info.uri}`);
+    // server.table().forEach((route) => console.log(`${route.method}\t${server.info.uri}${route.path}`));
+    if (process.env.LB_API_PORT) {
+      console.log('When using docker-compose');
+      server.table().forEach((route) => console.log(`${route.method}\thttp://${process.env.LB_API_HOST}:${process.env.LB_API_PORT}${route.path}`));
+    }
+    console.log("Otherwise");
     server.table().forEach((route) => console.log(`${route.method}\t${server.info.uri}${route.path}`));
 
     return server;

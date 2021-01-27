@@ -10,8 +10,7 @@ services:
       context: ./hapi-api
 
     command: >
-      sh -c "npm install && npm run dev"
-      # sh -c "npm install && npm install nodemon && npm run dev"
+      sh -c "npm install && npm install nodemon && npm run dev"
 
     volumes:
       - ./hapi-api:/usr/src/api
