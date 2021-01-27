@@ -16,6 +16,7 @@ RUN npm install
 COPY . .
 
 EXPOSE 5555
+#EXPOSE ${LB_API_PORT}
 
 # allow browser connection to docker
 # ENV HOST 0.0.0.0

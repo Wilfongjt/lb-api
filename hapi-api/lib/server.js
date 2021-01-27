@@ -21,7 +21,8 @@ import { UserAliasChelate } from '../lib/chelate.js';
 // ROUTES
 import root_route from '../routes/root_route.js';
 import restricted_route from '../routes/restricted_route.js';
-import user_route from '../routes/user_route.js';
+import user_route_post from '../routes/user_route_post.js';
+import user_route_put from '../routes/user_route_put.js';
 
 const lbEnv = new LbEnv();
 const secret = lbEnv.get('LB_JWT_SECRET');
@@ -33,7 +34,8 @@ const server = Hapi.Server({ host: host, port: port});
 const api_routes = [
   root_route,
   restricted_route,
-  user_route
+  user_route_post,
+  user_route_put
 ];
 
 const strategy =  function () {
@@ -105,7 +107,21 @@ exports.start = async () => {
 
     await server.start();
 
-    console.log(`Server running at: ${server.info.uri}`);
+    //console.log(server.table());
+    //const routes = [];
+    /*
+    server.table().forEach((route) => {
+      routes.push({"method": `${route.method}`,"route":`http://${process.env.LB_API_HOST}:${process.env.LB_API_PORT}${route.path}`, "form": {}});
+    });
+    */
+    //console.log('routes', routes);
+    //console.log(`Server running at: ${server.info.uri}`);
+    // server.table().forEach((route) => console.log(`${route.method}\t${server.info.uri}${route.path}`));
+    if (process.env.LB_API_PORT) {
+      console.log('When using docker-compose');
+      server.table().forEach((route) => console.log(`${route.method}\thttp://${process.env.LB_API_HOST}:${process.env.LB_API_PORT}${route.path}`));
+    }
+    console.log("Otherwise");
     server.table().forEach((route) => console.log(`${route.method}\t${server.info.uri}${route.path}`));
 
     return server;

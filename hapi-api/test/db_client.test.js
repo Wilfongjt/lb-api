@@ -27,27 +27,135 @@ describe('DbClient', () => {
     expect(client.table).toBeDefined();
   })
 
+  test('Select All', () => {
+    let client = new DbClient().connect();
+    let selectResult = client.select('*');
+
+    //let selectResult = client.select({pk:"520a5bd9-e669-41d4-b917-81212bc184a3",sk:"USER"});
+    //console.log('selectResult', selectResult);
+    expect(selectResult.selection.length).not.toEqual(0);
+
+  })
+  //
+
+  test('Select existing USER', () => {
+    let client = new DbClient().connect();
+    let selectResult = client.select({pk:"existing@user.com",sk:"USER"});
+
+    //let selectResult = client.select({pk:"520a5bd9-e669-41d4-b917-81212bc184a3",sk:"USER"});
+    //console.log('selectResult', selectResult);
+    expect(selectResult.selection.length).toEqual(1);
+
+    for (let i in selectResult.selection) {
+      let item = selectResult.selection[i];
+      //console.log('selectResult.selection',selectResult.selection);
+      //console.log('item', item);
+
+      expect(item.pk).toMatch(new RegExp(Const.emailPattern(),'i'));
+      expect(item.sk).toEqual(DataTypes.userType());
+      expect(item.tk).toMatch(new RegExp(Const.guidPattern(),'i'));
+      expect(item.form).toBeDefined();
+      expect(item.form.username).toMatch(new RegExp(Const.emailPattern(),'i'));
+      expect(item.form.displayname).toEqual('J');
+      expect(item.form.password).toBeDefined();
+
+      expect(item.created).toBeDefined();
+      expect(item.updated).not.toBeDefined();
+
+    }
+  })
+
+
+  test('Select list of USER', () => {
+    let client = new DbClient().connect();
+
+    let selectResult = client.select({sk:"USER"});
+    //console.log('selectResult', selectResult);
+    //expect(selectResult.isValid).toEqual(true);
+    //expect(selectResult.result).toBeDefined();
+    expect(selectResult.selection.length).not.toEqual(0);
+    for (let i in selectResult.selection) {
+      let item = selectResult.selection[i];
+
+      expect(item.pk).toMatch(new RegExp(Const.emailPattern(),'i'));
+      expect(item.sk).toEqual(DataTypes.userType());
+      //expect(item.tk).toMatch(new RegExp(Const.guidPattern(),'i'));
+      expect(item.form).toBeDefined();
+      expect(item.form.username).toMatch(new RegExp(Const.emailPattern(),'i'));
+      expect(item.form.displayname).toEqual('J');
+      expect(item.form.password).toBeDefined();
+
+      expect(item.created).toBeDefined();
+      expect(item.updated).not.toBeDefined();
+    }
+  })
+
+  test('Select non existant USER', () => {
+    let client = new DbClient().connect();
+
+    let result = client.select({pk:"non-existing-user",sk:"USER"});
+    //console.log('result', result);
+    expect(result).toMatchObject({criteria:{pk:"non-existing-user",sk:"USER"}, selection:[]});
+  })
+
+  test('Select and direct change a selection', () => {
+    // run query
+    // update the results
+    let client = new DbClient().connect();
+
+    let result = client.select({pk:"selectchange@user.com",sk:"USER"});
+    //console.log('A selectchange result', result);
+    result.selection[0].active=false;
+    result = client.select({pk:"selectchange@user.com",sk:"USER"});
+    //console.log('B selectchange result', result);
+    expect(result.selection[0].active).toEqual(false);
+    //console.log('client.table.table', client.table.table);
+    //expect(result).toMatchObject({criteria:{pk:"selectchange@user.com",sk:"USER"}, selection:[]});
+  })
+
+  test('Select and mergeHot change a selection', () => {
+    // run query
+    // update the results
+    let client = new DbClient().connect();
+
+    let result = client.select({pk:"selectchange@user.com",sk:"USER"});
+    let changes = {active: false};
+    result = client.select({pk:"selectchange@user.com",sk:"USER"});
+    client.mergeHot(changes, result.selection[0]);
+    expect(result.selection[0].active).toEqual(false);
+  })
+  test('Select and mergeCopy change a selection', () => {
+    // run query
+    // update the results
+    let client = new DbClient().connect();
+
+    let result = client.select({pk:"selectchange@user.com",sk:"USER"});
+    let changes = {active: false};
+    result = client.select({pk:"selectchange@user.com",sk:"USER"});
+    client.mergeCopy(changes, result.selection[0]);
+    expect(result.selection[0].active).toEqual(true);
+  })
   // Insert
   test('Insert USER', () => {
     let client = new DbClient().connect();
 
     let form = {
-      "username":"abc xyz",
+      "username":"abc@xyz.com",
        "displayname":"abc",
        "password":"a1A!aaaa"
      };
 
-    //let chelate = new UserChelate(form);
     let insertResult = client.insert(new UserChelate(form));
-    let insertAliasResult = client.insert(new UserAliasChelate(insertResult));
+    //console.log('userchelate', new UserChelate(form));
+    //let insertAliasResult = client.insert(new UserAliasChelate(insertResult));
 
     expect(insertResult.isValid).toEqual(true);
     expect(insertResult.result).toBeDefined();
-    expect(insertResult.result.pk).toMatch(new RegExp(Const.guidPattern(),'i'));
+    expect(insertResult.result.pk).toMatch(new RegExp(Const.emailPattern(),'i'));
     expect(insertResult.result.sk).toEqual(DataTypes.userType());
-    expect(insertResult.result.data).toEqual(DataTypes.userType());
+    expect(insertResult.result.tk).toMatch(new RegExp(Const.guidPattern(),'i'));
     expect(insertResult.result.form).toBeDefined();
-    expect(insertResult.result.form.username).toEqual('abc xyz');
+    expect(insertResult.result.form.username).toMatch(new RegExp(Const.emailPattern(),'i'));
     expect(insertResult.result.form.displayname).toEqual('abc');
     expect(insertResult.result.form.password).toBeDefined();
 
@@ -58,79 +166,71 @@ describe('DbClient', () => {
   test('Insert USER duplicate', () => {
     let client = new DbClient().connect();
 
-    //expect(client.connect()).toBeDefined();
-    //expect(client.table).toBeDefined();
     let form = {
-      "username":"abc xyz",
-       "displayname":"abc",
+      "username":"existing@user.com",
+       "displayname":"J",
        "password":"a1A!aaaa"
      };
 
     // isert first
-    let insertResult1 = client.insert(new UserChelate(form));
-    //console.log('A client.table', client.table);
+    //let insertResult1 = client.insert(new UserChelate(form));
     // attemp du0licat//e
-    let insertResult = client.insert(new UserChelate(insertResult1));
-    //console.log('B client.table', client.table);
-
+    let insertResult = client.insert(new UserChelate(form));
     expect(insertResult.isValid).toEqual(false);
+    expect(insertResult.error).toEqual('Duplicate not allowed!');
+  })
 
-    expect(insertResult.result).toEqual('Duplicate');
+  // Delete
+  test('Delete existing USER', () => {
+    let client = new DbClient().connect();
+    let expected_size = client.table.table.length - 1;
+    let deleteResult = client.delete({pk:"delete@user.com",sk:"USER"});
+    // table should be one less
+    expect(client.table.table.length).toEqual(expected_size);
+    //
+    //console.log('deleteResult',deleteResult);
+    //console.log('pk', deleteResult.deletion);
+    for (let i in deleteResult.deletion) {
+      let item = deleteResult.deletion[i];
+      expect(item.pk).toEqual("delete@user.com");
+      expect(item.sk).toEqual("USER");
+      expect(item.tk).toEqual("720a5bd9-e669-41d4-b917-81212bc184a3");
+    }
+    //console.log('table', client.table);
+  })
+  test('Delete non-existing USER', () => {
+    let client = new DbClient().connect();
+    let expected_size = client.table.table.length;
+    let deleteResult = client.delete({pk:"nonexisting@user.com",sk:"USER"});
+    // table should be the same size
+    expect(client.table.table.length).toEqual(expected_size);
+
   })
 
   // Update USER password
 
-  test('Update USER', () => {
+  test('Form Password Update USER', () => {
     let client = new DbClient().connect();
 
-    let form1 = {
-      "username":"abc xyz",
-       "displayname":"abc",
-       "password":"a1A!aaaa"
+    let form = {
+       "password": "b1A!bbbb"
      };
+    let chelate = {
+      sk: "USER",
+      tk: "820a5bd9-e669-41d4-b917-81212bc184a3",
+      form: form
+    };
 
-    // first: insert
-    let insertResult = client.insert(new UserChelate(form1));
-    //console.log('insertResult A',insertResult)
-    // second: insert
-    //let chelate = new UserChelate(insertResult);
-
-    // attemp du0licate
-    let form2 = {
-       "password":"a1A!aaaa2"
-     };
-    let chelate = new UserChelate(insertResult).setForm(form2);
-
-    // swap out the old form with new
-    // chelate.set('form', form2)
-
-    //console.log('chelate B', chelate);
     // update
     let updateResult = client.update(chelate);
-    // console.log('updateResult', updateResult);
-    //console.log('updated', updateResult);
 
-    expect(updateResult.isValid).toEqual(true);
+    //console.log('updateResult',updateResult);
+    let criteria = { sk: 'USER', tk: '820a5bd9-e669-41d4-b917-81212bc184a3' };
+    let selection = client.select(criteria);
 
-    expect(updateResult.result).toBeDefined();
-    //expect(updateResult.result.pk).toMatch(/^[0-9A-F]{8}-[0-9A-F]{4}-[5][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
-    // var pattern = new RegExp('^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$', 'i');
-
-    expect(updateResult.result.pk).toMatch(new RegExp(Const.guidPattern(),'i'));
-
-
-    //expect(updateResult.result.pk).toMatch(new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-[5][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i));
-    expect(updateResult.result.sk).toEqual(DataTypes.userType());
-    //expect(updateResult.result.pk).toEqual('abc xyz');
-    //expect(updateResult.result.sk).toEqual('profile#abc xyz');
-    expect(updateResult.result.data).toEqual(DataTypes.userType());
-    expect(updateResult.result.form).toBeDefined();
-    expect(updateResult.result.created).toBeDefined();
-    expect(updateResult.result.updated).toBeDefined();
+    expect(selection.selection[0].form.password).toEqual("b1A!bbbb");
 
   })
-  //
 
-  // Delete
 
 });
