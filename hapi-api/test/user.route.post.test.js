@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 import { init } from '../lib/server.js';
 import Jwt from '@hapi/jwt';
-import TestData from './test_data.js';
+import TestTokenPayload from './test_data.js';
 import { Password } from '../lib/password.js';
 
 describe('User Route ', () => {
@@ -32,7 +32,7 @@ describe('User Route ', () => {
       // Strategy: only guest token can add user
       //           set validation in route route.options.auth
       let username = 'newr@user.com';
-      let payload = new TestData().guest_TokenPayload();
+      let payload = new TestTokenPayload().guest_TokenPayload();
       let secret = process.env.LB_JWT_SECRET;
       let token = 'Bearer ' + Jwt.token.generate(payload, secret);
       const res = await server.inject({
@@ -69,7 +69,7 @@ describe('User Route ', () => {
       //           set validation in route route.options.auth
       let username = 'newr@user.com';
       //let fake_id = 'iamafakeid';
-      let payload = new TestData().guest_TokenPayload();
+      let payload = new TestTokenPayload().guest_TokenPayload();
       let secret = 'fake-secret';
       // make fake token by changing the secret to "fakesecret"
       let token = 'Bearer ' + Jwt.token.generate(payload, secret);
@@ -99,7 +99,7 @@ describe('User Route ', () => {
       let username = 'existing@user.com';
       let id = '520a5bd9-e669-41d4-b917-81212bc184a3';
       let scope = ['app'];
-      let token_payload = new TestData().user_TokenPayload(username,id,scope);
+      let token_payload = new TestTokenPayload().user_TokenPayload(username,id,scope);
       //console.log('test','token_payload',token_payload);
       // set up token
       let secret = process.env.LB_JWT_SECRET;

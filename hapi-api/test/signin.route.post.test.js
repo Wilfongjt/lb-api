@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 import { init } from '../lib/server.js';
 import Jwt from '@hapi/jwt';
-import TestData from './test_data.js';
+import TestTokenPayload from './test_data.js';
 
 describe('User Route ', () => {
   let server = null;
@@ -32,7 +32,7 @@ describe('User Route ', () => {
       // Strategy: only guest token can signin
       //           set validation in route route.options.auth
       let username = 'existing@user.com';
-      let payload = new TestData().guest_TokenPayload();
+      let payload = new TestTokenPayload().guest_TokenPayload();
       let secret = process.env.LB_JWT_SECRET;
       let token = 'Bearer ' + Jwt.token.generate(payload, secret);
       const res = await server.inject({
