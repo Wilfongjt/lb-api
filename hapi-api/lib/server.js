@@ -22,14 +22,10 @@ import { LbEnv } from './environment/lb_env.js';
 // Data Client
 import DbClient from './clients/db_client.js';
 import { ChelateUser } from './chelates/chelate_user.js';
-//import { UserAliasChelate } from '../lib/chelate.js';
 
 // ROUTES
-import root_route from '../routes/root_route.js';
-import restricted_route from '../routes/restricted_route.js';
-
-
-//import users_route_post from '../routes/users_route_post.js';
+import root_route from '../routes/examples/root_route.js'; // example
+import restricted_route from '../routes/examples/restricted_route.js'; // example
 
 import user_route_post from '../routes/user_route_post.js';
 import user_route_put from '../routes/user_route_put.js';
@@ -50,8 +46,8 @@ const swaggerOptions = {
     };
 
 const api_routes = [
-  root_route,
-  restricted_route,
+  root_route, // example
+  restricted_route, // example
   user_route_post,
   user_route_put,
   user_route_get,
@@ -67,17 +63,13 @@ const strategy =  function () {
         sub: false
     },
     validate: (artifacts, request, h) => {
-      //console.log('validate 1');
         if (! artifacts.decoded.payload.user) {
           return {isValid: false}
         }
-        //console.log('validate 2');
 
         if (! artifacts.decoded.payload.scope) {
           return {isValid: false}
         }
-        //console.log('validate 3', artifacts.decoded.payload.user);
-        //console.log('validate 4', artifacts.decoded.payload.scope);
 
         return {
             isValid: true,
