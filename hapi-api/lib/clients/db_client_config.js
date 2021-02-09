@@ -2,7 +2,7 @@ export default class DbClientConfig {
   constructor() {
       this.host = process.env.LB_HOST || '0.0.0.0'; // hapi host
       this.port = process.env.LB_PORT || 5555; // hapi port
-      this.path = '../data/seed.json';
+      this.path = '../../data/seed.json';
       /*
       this.user = process.env.JSON_DB_USER || 'json_db';
       this.host = process.env.JSON_DB_HOST || 'localhost';

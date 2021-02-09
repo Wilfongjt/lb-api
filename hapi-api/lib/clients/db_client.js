@@ -1,18 +1,20 @@
+import jsonQuery from 'json-query';
+import Jwt from '@hapi/jwt';
 
 import DbClientConfig from './db_client_config.js';
-import Chelate from './chelate.js'
-import { ChelatePattern } from '../lib/chelate_pattern.js'
-//const jsonQuery = require('json-query');
-import jsonQuery from 'json-query';
-import DataTypes from '../lib/data_types.js';
-import Jwt from '@hapi/jwt';
-import TokenPayload  from '../lib/token_payload.js';
-import { Password } from '../lib/password.js';
-import { ChelateUser } from '../lib/chelate_user.js';
-//import { Criteria } from '../lib/criteria.js';
-import { CriteriaBest } from '../lib/criteria.js';
-import { CriteriaPK } from '../lib/criteria.js';
-import { ChelateHelper } from '../lib/chelate_helper.js'
+
+import Chelate from '../chelates/chelate.js'
+import { ChelatePattern } from '../chelates/chelate_pattern.js'
+import { ChelateUser } from '../chelates/chelate_user.js';
+import { ChelateHelper } from '../chelates/chelate_helper.js'
+
+import DataTypes from '../constants/data_types.js';
+
+import TokenPayload  from '../auth/token_payload.js';
+import { Password } from '../auth/password.js';
+
+import { CriteriaBest } from '../clients/criteria.js';
+import { CriteriaPK } from '../clients/criteria.js';
 // insert {pk:null, sk, data:null, form, ...}
 //
 //

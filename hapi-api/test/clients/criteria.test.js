@@ -4,17 +4,16 @@ if (process.env.NODE_ENV !== 'production') {
   process.env.DEPLOY_ENV=''
 
   const path = require('path');
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 }
-import Consts from '../lib/consts.js';
+import Consts from '../../lib/constants/consts.js';
+import DataTypes from '../../lib/constants/data_types.js';
 
-import { Criteria } from '../lib/criteria.js';
-import { CriteriaPK } from '../lib/criteria.js';
-import { CriteriaSK } from '../lib/criteria.js';
-import { CriteriaBest } from '../lib/criteria.js';
+import { Criteria } from '../../lib/clients/criteria.js';
+import { CriteriaPK } from '../../lib/clients/criteria.js';
+import { CriteriaSK } from '../../lib/clients/criteria.js';
+import { CriteriaBest } from '../../lib/clients/criteria.js';
 
-import DataTypes from '../lib/data_types.js';
-//import Utils from '../lib/utils.js';
 
 describe('Criteria', () => {
   // Initialize

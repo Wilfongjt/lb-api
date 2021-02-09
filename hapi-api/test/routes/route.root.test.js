@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 }
 
-import { init } from '../lib/server.js'
+import { init } from '../../lib/server.js'
 
 describe('GET /', () => {
   let server = null;

@@ -4,13 +4,13 @@ if (process.env.NODE_ENV !== 'production') {
   process.env.DEPLOY_ENV=''
 
   const path = require('path');
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 }
-import Consts from '../lib/consts.js';
+import Consts from '../../lib/constants/consts.js';
 
-import { Chelate } from '../lib/chelate.js';
-import DataTypes from '../lib/data_types.js';
-//import Utils from '../lib/utils.js';
+import DataTypes from '../../lib/constants/data_types.js';
+import { Chelate } from '../../lib/chelates/chelate.js';
+
 /* New
 PK SK TK must have all
 ATT ATT ATT must convert to PK SK TK

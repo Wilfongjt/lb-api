@@ -4,10 +4,10 @@ if (process.env.NODE_ENV !== 'production') {
   process.env.DEPLOY_ENV=''
 
   const path = require('path');
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 }
 
-import DbClientConfig from '../lib/db_client_config.js';
+import DbClientConfig from '../../lib/clients/db_client_config.js';
 
 describe('DbClientConfig', () => {
   test('new DbClientConfig', () => {

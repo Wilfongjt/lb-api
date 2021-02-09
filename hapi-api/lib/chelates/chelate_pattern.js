@@ -55,8 +55,9 @@ Submit (PUT) Chelate with Form changes (in-chelate) to API
       insert(new-chelate)
 
 */
-import Consts from '../lib/consts.js';
-import Criteria from '../lib/criteria.js';
+import Consts from '../../lib/constants/consts.js';
+import Criteria from '../../lib/clients/criteria.js';
+
 export class ChelatePattern {
 
   constructor(chelate, metaKeys='active created form updated') {

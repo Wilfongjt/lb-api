@@ -1,4 +1,4 @@
-import TokenPayload  from '../lib/token_payload.js';
+import TokenPayload  from './token_payload.js';
 
 export default class TestTokenPayload {
   constructor() {

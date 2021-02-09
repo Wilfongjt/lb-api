@@ -1,5 +1,5 @@
 
-import { Password } from '../lib/password.js';
+import { Password } from '../../lib/auth/password.js';
 
 describe('Password', () => {
   // Initialize

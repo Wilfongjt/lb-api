@@ -4,13 +4,13 @@ if (process.env.NODE_ENV !== 'production') {
   process.env.DEPLOY_ENV=''
 
   const path = require('path');
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 }
-
-import { init } from '../lib/server.js';
 import Jwt from '@hapi/jwt';
-import TestTokenPayload from './test_data.js';
-import { Password } from '../lib/password.js';
+import TestTokenPayload from '../../lib/auth/test_token_payload.js';
+
+import { init } from '../../lib/server.js';
+import { Password } from '../../lib/auth/password.js';
 
 
 describe('User Route ', () => {
