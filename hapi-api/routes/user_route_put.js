@@ -1,26 +1,26 @@
 import Joi from 'joi';
 import DbClient from '../lib/db_client.js';
-import { UserChelate } from '../lib/chelate.js';
-import { UserAliasChelate } from '../lib/chelate.js';
-// app-name   guest
-//   |          |
-
+import { ChelateUser } from '../lib/chelate_user.js';
+/*
+Put Update
+* requires a user-token
+* payload must contain {pk:"", sk:"", ...} or  {sk:"", tk:"", ...}
+* payload must contain a {...,"form": {...}} key
+*/
 module.exports = {
   method: 'PUT',
   path: '/user',
-  handler: function (req, h) {
-    console.log('/user put 1');
-    let client = new DbClient().connect();
-    console.log('/user put 2');
-    console.log('payload', req.payload);
-    console.log('new UserChelate(req.payload))',new UserChelate(req.payload));
-    console.log('client', client);
-    let insertResponse = client.update(new UserChelate(req.payload));
 
-console.log('/user put out');
-    return '/user route';
-  },
   options: {
+        description: 'Update User',
+        notes: 'Returns ',
+        tags: ['api'],
+        handler: function (req, h) {
+          let client = new DbClient().connect();
+          let payload = req.payload;
+          let updateResponse = client.update(payload);
+          return updateResponse;
+        },
         auth: {
           mode: 'required',
           strategy: 'lb_jwt_strategy',
@@ -30,10 +30,17 @@ console.log('/user put out');
         },
         validate: {
           payload: Joi.object({
-            username: Joi.string().min(1).max(20).required(),
-            displayname: Joi.string().min(1).max(20).required(),
-            password: Joi.string().min(7).required()
-          })
+            sk: Joi.string().min(1).max(50).required(),
+            tk: Joi.string().required(),
+            form: {
+              username: Joi.string().min(1).max(250).required(),
+              displayname: Joi.string().min(1).max(20).required(),
+              password: Joi.string().min(7).required()
+            }
+          }),
+          headers: Joi.object({
+               'authorization': Joi.string().required()
+          }).unknown()
         }
     }
 }

@@ -1,15 +1,14 @@
 export default class DataTypes {
 
   static userType() {
-    return 'USER';
+    return 'const#USER';
   }
   static aliasType() {
-    return 'ALIAS';
+    return 'const#ALIAS';
   }
   static in(typeName) {
     switch(typeName) {
-      case 'USER': return true; break;
-      case 'ALIAS': return true; break;
+      case 'const#USER': return true; break;
     }
     return false;
   }
