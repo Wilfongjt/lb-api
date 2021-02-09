@@ -1,6 +1,6 @@
 
-import Consts from '../lib/consts.js';
-import { ChelatePattern } from '../lib/chelate_pattern.js';
+import Consts from '../../lib/constants/consts.js';
+import { ChelatePattern } from '../../lib/chelates/chelate_pattern.js';
 
 describe('ChelatePattern', () => {
   // Initialize

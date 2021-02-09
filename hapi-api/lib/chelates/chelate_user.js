@@ -1,7 +1,8 @@
-import DataTypes from '../lib/data_types.js';
 import { v4 as uuidv4 } from 'uuid';
-import { Password } from '../lib/password.js';
-import { Chelate } from '../lib/chelate.js';
+import { Chelate } from './chelate.js';
+
+import DataTypes from '../../lib/constants/data_types.js';
+import { Password } from '../../lib/auth/password.js';
 
 export class ChelateUser extends Chelate {
   constructor (form) {

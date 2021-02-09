@@ -1,6 +1,6 @@
 import Joi from 'joi';
-import DbClient from '../lib/db_client.js';
-import { ChelateUser } from '../lib/chelate_user.js';
+import DbClient from '../lib/clients/db_client.js';
+import { ChelateUser } from '../lib/chelates/chelate_user.js';
 //import { UserAliasChelate } from '../lib/chelate.js';
 // app-name   guest
 //   |          |

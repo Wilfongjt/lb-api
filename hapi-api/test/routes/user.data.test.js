@@ -6,13 +6,15 @@ if (process.env.NODE_ENV !== 'production') {
   const path = require('path');
   dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 }
-
-import { init } from '../lib/server.js';
 import Jwt from '@hapi/jwt';
-import TestData from './test_data.js';
-import { Password } from '../lib/password.js';
-import DBClient from '../lib/db_client.js';
-import { UserChelate } from '../lib/chelate.js'
+import TestData from '../../lib/auth/test_token_payload.js';
+
+import { init } from '../../lib/server.js';
+
+import { Password } from '../../lib/auth/password.js';
+import DBClient from '../../lib/clients/db_client.js';
+import { UserChelate } from '../../lib/chelates/chelate.js';
+
 describe('Convert users ', () => {
   let server = null;
 

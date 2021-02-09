@@ -1,5 +1,5 @@
-import Consts from '../lib/consts.js';
-import { ChelateHelper } from '../lib/chelate_helper.js';
+import Consts from '../../lib/constants/consts.js';
+import { ChelateHelper } from '../../lib/chelates/chelate_helper.js';
 
 describe('ChelateHelper', () => {
   // Initialize

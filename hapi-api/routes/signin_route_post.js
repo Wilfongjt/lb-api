@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import DbClient from '../lib/db_client.js';
+import DbClient from '../lib/clients/db_client.js';
 
 module.exports = {
   method: 'POST',

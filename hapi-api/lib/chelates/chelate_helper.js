@@ -1,5 +1,5 @@
-import { ChelatePattern } from '../lib/chelate_pattern.js';
-import { Chelate } from '../lib/chelate.js';
+import { ChelatePattern } from './chelate_pattern.js';
+import { Chelate } from './chelate.js';
 
 export class ChelateHelper {
   constructor() {}

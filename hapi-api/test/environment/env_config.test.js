@@ -4,12 +4,12 @@ if (process.env.NODE_ENV !== 'production') {
   process.env.DEPLOY_ENV=''
 
   const path = require('path');
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 }
 
-import { EnvConfig } from '../lib/env_config.js';
-import { LbEnv } from '../lib/lb_env.js';
-import { NodeEnv } from '../lib/node_env.js';
+import { EnvConfig } from '../../lib/environment/env_config.js';
+import { LbEnv } from '../../lib/environment/lb_env.js';
+import { NodeEnv } from '../../lib/environment/node_env.js';
 
 describe('EnvConfig', () => {
   test('new EnvConfig', () => {

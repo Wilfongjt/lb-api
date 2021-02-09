@@ -4,13 +4,12 @@ if (process.env.NODE_ENV !== 'production') {
   process.env.DEPLOY_ENV=''
 
   const path = require('path');
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 }
-import Consts from '../lib/consts.js';
+import Consts from '../../lib/constants/consts.js';
+import DataTypes from '../../lib/constants/data_types.js';
 
-import { ChelateUser } from '../lib/chelate_user.js';
-import DataTypes from '../lib/data_types.js';
-//import Utils from '../lib/utils.js';
+import { ChelateUser } from '../../lib/chelates/chelate_user.js';
 
 describe('ChelateUser New', () => {
   // Initialize

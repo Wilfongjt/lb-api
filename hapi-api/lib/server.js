@@ -16,12 +16,12 @@ import Vision from '@hapi/vision';
 import HapiSwagger from 'hapi-swagger';
 import Pack from '../package';
 
-import { EnvConf } from './env_config.js';
+import { EnvConf } from './environment/env_config.js';
 
-import { LbEnv } from '../lib/lb_env.js';
+import { LbEnv } from './environment/lb_env.js';
 // Data Client
-import DbClient from '../lib/db_client.js';
-import { ChelateUser } from '../lib/chelate_user.js';
+import DbClient from './clients/db_client.js';
+import { ChelateUser } from './chelates/chelate_user.js';
 //import { UserAliasChelate } from '../lib/chelate.js';
 
 // ROUTES
