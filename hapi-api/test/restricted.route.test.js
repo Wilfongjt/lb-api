@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 import { init } from '../lib/server.js';
 import Jwt from '@hapi/jwt';
-import TestData from './test_data.js';
+import TestTokenPayload from './test_data.js';
 
 describe('/restricted route', () => {
     let server = null;
@@ -31,7 +31,7 @@ describe('/restricted route', () => {
         // Goal: call api with application JWT app-token
         // Strategy: configure route validate to check for user and scope
 
-        let payload = new TestData().guest_TokenPayload();
+        let payload = new TestTokenPayload().guest_TokenPayload();
         let secret = process.env.LB_JWT_SECRET;
 
         let token = 'Bearer ' + Jwt.token.generate(payload, secret);
@@ -50,7 +50,7 @@ describe('/restricted route', () => {
         // Goal: call api with application JWT app-token
         // Strategy: reject when token is made with wrong password/secret
 
-        let payload = new TestData().guest_TokenPayload();
+        let payload = new TestTokenPayload().guest_TokenPayload();
         let secret = 'the.wrong.password';
 
         let token = 'Bearer ' + Jwt.token.generate(payload, secret);
@@ -71,7 +71,7 @@ describe('/restricted route', () => {
         // Strategy: Reject tokens with wrong claim values
         //           See list of claims in lib/server.js strategy(), verify for required claims
 
-        let payload = new TestData().badIss_TokenPayload();
+        let payload = new TestTokenPayload().badIss_TokenPayload();
         let secret = process.env.LB_JWT_SECRET;
         let token = 'Bearer ' + Jwt.token.generate(payload, secret);
 
@@ -91,7 +91,7 @@ describe('/restricted route', () => {
         // Strategy: Reject tokens with missing claims ... hapi requires aud, iss, sub
         //           See list of claims in lib/server.js strategy(), verify for required claims
 
-        let payload = new TestData().missingAud_TokenPayload();
+        let payload = new TestTokenPayload().missingAud_TokenPayload();
         let secret = process.env.LB_JWT_SECRET;
         let token = 'Bearer ' + Jwt.token.generate(payload, secret);
 
@@ -116,7 +116,7 @@ describe('/restricted route', () => {
         //           pass it to restricted route
         //           expect 401 exception
 
-        let payload = new TestData().missingUser_TokenPayload();
+        let payload = new TestTokenPayload().missingUser_TokenPayload();
 
         let secret = process.env.LB_JWT_SECRET;
         let token = 'Bearer ' + Jwt.token.generate(payload, secret);
@@ -139,7 +139,7 @@ describe('/restricted route', () => {
       //           pass it to restricted route
       //           expect 401 exception
 
-        let payload = new TestData().missingScope_TokenPayload();
+        let payload = new TestTokenPayload().missingScope_TokenPayload();
         let secret = process.env.LB_JWT_SECRET;
         // evaluate
         const res = await server.inject({

@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 import { init } from '../lib/server.js';
 import Jwt from '@hapi/jwt';
-import TestData from './test_data.js';
+import TestTokenPayload from './test_data.js';
 import { Password } from '../lib/password.js';
 
 
@@ -37,7 +37,7 @@ describe('User Route ', () => {
       let user_name = 'existing@user.com';
       let id = '520a5bd9-e669-41d4-b917-81212bc184a3';
       let scope = ['app'];
-      let token_payload = new TestData().user_TokenPayload(user_name,id,scope);
+      let token_payload = new TestTokenPayload().user_TokenPayload(user_name,id,scope);
       //console.log('test','token_payload',token_payload);
       // set up token
       let secret = process.env.LB_JWT_SECRET;
