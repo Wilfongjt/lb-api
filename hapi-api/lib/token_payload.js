@@ -1,6 +1,16 @@
 // guest is an application guest that can post to the /user route
 // user is an application user that can interact with a single account
 export default class TokenPayload {
+  constructor(aud='api-client',iss='lyttlebit',sub=false,user='guest',scope='guest') {
+    this.token_payload = {
+        aud: aud,
+        iss: iss,
+        sub: false,
+        user: user,
+        scope: [scope]
+    };
+  }
+  /*
   constructor() {
     this.token_payload = {
         aud: 'api-client',
@@ -10,6 +20,7 @@ export default class TokenPayload {
         scope: ['guest']
     };
   }
+  */
   payload() {
     //return JSON.stringify(this.token_payload) ;
     return this.token_payload;

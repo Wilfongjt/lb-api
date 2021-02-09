@@ -1,172 +1,141 @@
-import DataTypes from '../lib/data_types.js';
 import { v4 as uuidv4 } from 'uuid';
 
-export class Chelate extends Map {
-  constructor () {
-    super();
-    let _datetime = new Date();
-    this.set("pk","");
-    this.set("sk","");
-    this.set("tk","");
-    this.set("form",{});
-    this.set("active", true);
-    this.set("created",_datetime);
-    // this.set("updated",_datetime);
+export class Chelate {
+  constructor(key_map, form) {
+    /*
+    key_map ex
+    {
+      pk:{att: "username"},
+      sk:{const: "USER"},
+      tk:{guid: "*"}        // * is flag to calculate guid when not provided
+    }
+    */
+    //this.#keys=key_map;
+    if(form && key_map) {
+      // create new when a form is provided
+      //console.log('this._guessFormType(key_map,form)',this._guessFormType(key_map,form));
+      switch(this._guessFormType(key_map,form)){
+        case 1: // form
+            this._assignForm(key_map,form);
+          break;
+        case 2: // chelate + form
+            this._assignChelate(key_map,form);
+          break;
+      }
+    } else {
+      if(key_map && !form ){
+        throw new Error(`Chelate is missing keymap or form`);
+      }
+    }
   }
-  validate(form) {
 
-    return true;
+  _guessFormType(key_map, obj) {
+    //console.log('key_map', key_map);
+    if(!key_map){
+      return 0; // unhandled
+    }
+    if(!obj){
+      return 0; // unhandled
+    }
+    if (obj['pk'] && obj['sk'] && obj['tk'] && obj['form']) {
+      return 2; // chelate with form
+    } else if(!obj['pk'] && !obj['sk'] && !obj['tk'] && !obj['form']) {
+      return 1;// form
+    }
+    return 0; // unhandled
+  }
+
+  _assignForm(key_map, form){
+    for (let k in key_map) { //  k is integer
+      let isKeyName = key_map[k]['att'];
+      if (key_map[k]['att']) {
+        let isKeyNameInForm =  form[key_map[k]['att']];
+        if (! isKeyNameInForm) { //
+          throw new Error(`Chealate form must contain ${key_map[k]['att']} ${form[key_map[k]['att']]}`);
+        }
+        // <form-attribute-name>#<value>  eg username#john@gmail.com
+        let form_name = key_map[k]['att'];
+        let form_val = form[key_map[k]['att']];
+        this[k] =  `${form_name}#${form_val}` ;
+      } else if (key_map[k]['const']) { // eg USER
+        let const_val = key_map[k]['const'];
+        this[k] = `const#${const_val}`;
+        //this[k] = 'const#' + key_map[k]['const'];
+      } else if (key_map[k]['guid']) { // eg 820a5bd9-e669-41d4-b917-81212bc184a3
+        let guid_value = key_map[k]['guid'] ;
+        this[k] = `guid#${guid_value}`;
+        //this[k] = 'guid#' + key_map[k]['guid'];
+        if(this[k] === 'guid#*'){ // calculate the guid
+          this[k] =  'guid#' + uuidv4();
+        }
+      }
+    }
+    // chelate has to have all keys in key_map
+    this['form'] =JSON.parse(JSON.stringify(form));
+    this['active'] = true;
+
+    let dat = new Date();
+    this['created'] = dat;
+    // updated is changed in the update process
+    this['updated'] = dat;
+    return this;
+  }
+  _assignChelate(key_map, chelate) {
+    for (let k in chelate) {
+      this[k]= chelate[k];
+    }
+    for (let k in key_map) {
+      if(! this[k]){
+        throw new Error(`Missing ${k} key.`);
+      }
+    }
+    if (!this['active']){
+      this['active'] = true;
+    }
+    let dat = new Date();
+    if (!this['created']) {
+      this['created'] = dat;
+    }
+    // updated is changed in the update process
+    if (!this['updated']) {
+      this['updated'] = dat;
+    }
+    return this;
   }
 
   toJson() {
-    return Object.fromEntries(this); ;
-  }
+    //console.log('toJson',this);
+    //return JSON.parse(this.toString());
+    let rc = {}
 
-  //update( form ) {
-//    this.form = form;
-  //}
-
-}
-/*
-"form": {
-  "id": "woden@citizenlabs.org",
-  "app": "Adopt-A-Drain",
-  "key": "15f9dd5c-4451-4eb7-8146-0b9518990500",
-  "org": "CitizenLabs",
-  "name": "woden@citizenlabs.org",
-  "type": "woden",
-  "roles": "woden,admin",
-  "password": "$2a$06$SbZ4FeMPXpiSkQKARwMyp.TsjTFgRBaaNrWphWzIzRY819aLzc0w."
-}
-*/
-
-/*
-{ // response wrapper
-  isValid: true,
-  result: { // chelate wrapper
-    pk:"",
-    sk:"",
-    data:"",
-    form: {
-
-    },
-    created:"",
-    updated:""
-  }
-}
-*/
-/*
-
-*/
-export class UserChelate extends Chelate {
-  constructor (form) {
-    super();
-    ///this.set('dups', false);
-
-    if( form.isValid ) { // from response from insert or update
-      // get result.form
-      this.set('pk',form.result.pk);
-      this.set('sk',form.result.sk);
-      this.set('tk',form.result.tk);
-      this.set('form',JSON.parse(JSON.stringify(form.result.form)));
-      this.set('created', form.result.created);
-      if (form.result.updated) {
-        this.set('updated', form.result.updated);
-      }
-    } else if ( form.pk ) { // wrap
-
-      this.set('pk',form.pk);
-      this.set('sk',form.sk);
-      this.set('tk',form.tk);
-      this.set('form',JSON.parse(JSON.stringify(form.form)));
-      this.set('created', form.created);
-      if (form.updated) {
-        this.set('updated', form.updated);
-      }
-
-    } else if ( form.username ) { // straight user-form
-
-      this.set("pk", form.username);
-      this.set("sk", DataTypes.userType());
-      this.set("tk", uuidv4());
-
-      this.set("form", JSON.parse(JSON.stringify(form)));
+    for (let k in this) {
+      rc[k] =  this[k];
     }
-  }
 
-  setForm(form){
-    this.set('form', form);
+    return rc;
+  }
+/*
+  assign(chelate) {
+
+    for (let k in chelate) {
+      this[k]= chelate[k];
+    }
+
     return this;
   }
-}
-/*
-export class UserChelate extends Chelate {
-  constructor (form) {
-    super();
-
-    if( form.isValid ) { // from response from insert or update
-      // get result.form
-      this.set('pk',form.result.pk);
-      this.set('sk',form.result.sk);
-      this.set('data',form.result.data);
-      this.set('form',JSON.parse(JSON.stringify(form.result.form)));
-      this.set('created', form.result.created);
-      if (form.result.updated) {
-        this.set('updated', form.result.updated);
-      }
-    } else if ( form.pk ) { // wrap
-      this.set('pk',form.pk);
-      this.set('sk',form.sk);
-      this.set('data',form.data);
-      this.set('form',JSON.parse(JSON.stringify(form.form)));
-      this.set('created', form.created);
-      if (form.updated) {
-        this.set('updated', form.updated);
-      }
-
-    } else if ( form.username ) { // straight user-form
-
-      this.set("pk", uuidv4());
-      this.set("sk", DataTypes.userType());
-      //this.set("sk", "profile#%s".replace('%s',item.username));
-      this.set("data", DataTypes.userType());
-      this.set("form", JSON.parse(JSON.stringify(form)));
-    }
+*/
+  getKeyMap() {
+      let pattern = new Pattern(this);
+      return pattern.getKeyMap();
   }
-
-  setForm(form){
-    this.set('form', form);
+/*
+  update(form) {
+    if ( this.form ){
+      for (let k in form) {
+        this.form[k]=form[k];
+      }
+    }
     return this;
   }
-}
-
-export class UserAliasChelate extends Chelate {
-  constructor (item) {
-    super();
-    // from response from insert or update
-    //if( item.isValid ){ // from response from insert or update
-      // get result.form
-      this.set('pk',item.result.form.username);
-      this.set('sk', DataTypes.aliasType());
-      this.set('data',DataTypes.userType());
-      this.set('form',{pk:item.result.form.pk, sk:item.result.form.sk});
-      this.set('created', item.result.created);
-      if (item.result.updated) {
-        this.set('updated', item.result.updated);
-      }
-      */
-    /*} else if ( item.pk ){ // user-chelate
-      // get
-      this.set('pk',item.pk);
-      this.set('sk',item.sk);
-      this.set('data',item.data);
-      this.set('form',JSON.parse(JSON.stringify(item.form)));
-      this.set('created', item.created);
-      if (item.updated) {
-        this.set('updated', item.updated);
-      }
-    }*/
-    /*
-  }
-}
 */
+}
