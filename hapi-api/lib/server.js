@@ -20,7 +20,7 @@ import { EnvConf } from './environment/env_config.js';
 
 import { LbEnv } from './environment/lb_env.js';
 // Data Client
-import DbClient from './clients/db_client.js';
+import DbClientRouter from './clients/db_client_router.js';
 import { ChelateUser } from './chelates/chelate_user.js';
 
 // ROUTES

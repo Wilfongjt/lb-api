@@ -130,3 +130,19 @@ LB_JWT_SECRET=PASSWORDmustBEATLEAST32CHARSLONGLONG
 ```
 npm install json-query
 ```
+# Postgres
+Documentation: https://node-postgres.com
+```
+npm install pg
+```
+# Environment variables (.env)
+```
+# db as postgres
+POSTGRES_DB=one_db
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=mysecretdatabasepassword
+POSTGRES_JWT_SECRET=PASSWORDmustBEATLEAST32CHARSLONGLONG
+LB_GUEST_PASSWORD=mysecretclientpassword
+LB_WODEN={"org":"CitizenLabs","app":"One-API","name":"woden@citizenlabs.org","password":"a1A!aaaa"}
+
+```

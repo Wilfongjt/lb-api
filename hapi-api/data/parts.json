@@ -1,0 +1,40 @@
+{
+  "table": [
+    {
+      "pk": "tablename#users",
+      "sk": "TABLE#1",
+      "tk": "guid#420a5bd9-e669-41d4-b917-81212bc184a3",
+      "form": {},
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    },
+    {
+      "pk": "guid#420a5bd9-e669-41d4-b917-81212bc184a3",
+      "sk": "cell#1-1",
+      "tk": "username#selectchange@user.com",
+      "form": { "username": "selectchange@user.com"},
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    },
+    {
+      "pk": "guid#420a5bd9-e669-41d4-b917-81212bc184a3",
+      "sk": "cell#1-2",
+      "tk": "username#selectchange@user.com",
+      "form": {"displayname": "J"},
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    },
+    {
+      "pk": "guid#420a5bd9-e669-41d4-b917-81212bc184a3",
+      "sk": "cell#1-3",
+      "tk": "username#selectchange@user.com",
+      "form": {"password": {
+                  "hash":"048a1d2b6056d6589f8f63f48cf77165f5cff56e56663d1a9195ded9e230ee355b1abb8c22b3fb9ec409f02bc8a725f148988efaa233b30e1333aa1a28198703",
+                  "salt":"707bb65c19e52f452b17b51eb5d0b943"
+                }
+      },
+      "active": true,
+      "created": "2021-01-23T14:29:34.998Z"
+    }
+  ]
+}

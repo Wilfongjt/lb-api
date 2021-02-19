@@ -1,66 +1,80 @@
-deprecated
+import { Client } from 'pg';
+import { CriteriaBest } from '../criteria.js';
 
-import jsonQuery from 'json-query';
-import Jwt from '@hapi/jwt';
-
-import DbClientConfig from './db_client_config.js';
-
-import Chelate from '../chelates/chelate.js'
-import { ChelatePattern } from '../chelates/chelate_pattern.js'
-import { ChelateUser } from '../chelates/chelate_user.js';
-import { ChelateHelper } from '../chelates/chelate_helper.js'
-
-import DataTypes from '../constants/data_types.js';
-
-import TokenPayload  from '../auth/token_payload.js';
-import { Password } from '../auth/password.js';
-
-import { CriteriaBest } from '../clients/criteria.js';
-import { CriteriaPK } from '../clients/criteria.js';
-// insert {pk:null, sk, data:null, form, ...}
-//
-//
-export default class DbClient {
+export default class DbClientPostgres extends Client {
   // always starts with an empty table
-  // connect clears the table
-  constructor () {
-    //console.log('db client ');
-    /*
-    this.table = {
-      "table": []
+
+  constructor (config) {
+    super(config);
+    //console.log('DbClientPostgres config',config);
+  }
+
+  /*
+  environment:
+      - PGHOST: 'db'
+      - PGDATABASE: 'postgres'
+      - PGUSER: 'postgres'
+      - PGPASSWORD: 'postgres'
+  */
+async query(select_criteria) {
+  let result = [];
+  let error;
+
+  try {
+    //console.log('type', typeof(select_criteria));
+    //console.log('select_criteria',select_criteria);
+
+    // validate criteria
+    let criteriaBest = new CriteriaBest(select_criteria);// throws exceptions
+
+    //console.log('criteriaBest',criteriaBest);
+    let query = {
+      text: 'select * from one_version_0_0_1.query($1)',
+      values: [JSON.stringify(criteriaBest)]
     };
-    this.config = new DbClientConfig();
-    */
-  }
 
-  connect() {
-    throw new Error('Child class of DBClient is missing a connect() method.');
-    //console.log('connect', this.config);
-    /*
-    if (!this.config.path){
-      throw new Error('Missing path value');
+    let res = await super.query(query);
+
+    //console.log('A res',res);
+    //console.log('rows', res.rows);
+    result = res.rows.map((result) => {delete result.results.form['password']; return result.results;});
+
+  } catch(e) {
+    //console.error(e.stack);
+    error = e.message;
+  } finally{
+    let selection = {criteria: select_criteria, selection: result};
+    if(error) {
+      selection.error=error;
     }
-    if (this.table !== null) {
-      // load json default data
-      this.table = JSON.parse(JSON.stringify(require(this.config.path)));
-
-    }
-    */
-    return this;
+    //console.log('out *****************');
+    return selection;
   }
 
-  disconnect() {
-    throw new Error('Child class of DBClient is missing a disconnect() method.');
+}
+/*
+  async query(select_criteria) {
+    await this.connect();
+
+    //let res = await this.query('SELECT $1::text as message', ['Hello world!']);
+    let res = await this.query('Select NOW()');
+    //console.log('res', res);
+    //await this.end() ;
+      client.release();
+    return res;
 
   }
-
+*/
+   insert(chelate) {}
+   delete(criteria) {}
+   update(update_chelate) {}
+   signup(credentials) {}
+   signin(credentials) {}
+/*
 
   select(select_criteria) { //
     // {pk:"*", sk:"*"}
     // {sk:"*", tk:"*"}
-    throw new Error('Child class of DBClient is missing a select(select_criteria) method.');
-
-    /*
     let result = [];
     let error;
     if (typeof(select_criteria)==='string') {
@@ -97,14 +111,12 @@ export default class DbClient {
     if (error) {
       selection.error = error;
     }
-    */
 
     return selection;
   }
 
   insert(chelate) {
-    throw new Error('Child class of DBClient is missing a insert(chelate) method.');
-    /*
+
     if (!this.table) {
       throw new Error('Not connected to data');
     }
@@ -119,16 +131,11 @@ export default class DbClient {
     this.table.table.push(chelate_copy);
 
     // insertResponse
-    */
-    //return {insertion: chelate_copy};
-
+    return {insertion: chelate_copy};
   }
 
 
   delete(criteria) {
-    throw new Error('Child class of DBClient is missing a delete(criteria) method.');
-
-    /*
     let result=[];
     let error;
 
@@ -163,20 +170,17 @@ export default class DbClient {
     if (error) {
       deletion.error = error;
     }
-    */
-    //return deletion;
+
+    return deletion;
   }
 
   update(update_chelate) {
-    throw new Error('Child class of DBClient is missing a update(update_chelate) method.');
-
     // update current record
     // strategy:  find record,
     //            resolve differences,
     //            delete record,
     //            insert resolved record
     // return record before updated
-    /*
     let chelateHelper = new ChelateHelper();
     let result = [];
     let criteria = JSON.parse(JSON.stringify(new CriteriaBest(update_chelate))); // use to find record and as part of return
@@ -198,29 +202,22 @@ export default class DbClient {
     //if (error) {
     //  updates.error = error;
     //}
-    */
-    //return updates;
+    return updates;
   }
-
 
   ////////////
   // SignUp
   ///////////
   signup(credentials) {
-    throw new Error('Child class of DBClient is missing a signup(credentials) method.');
 
-    /*
     let insertResponse = this.insert(new ChelateUser(credentials));
 
     return insertResponse;
-    */
   }
   /////////////
   // SignIn
   /////////////
   signin(credentials) {
-    throw new Error('Child class of DBClient is missing a signin(credentials) method.');
-    /*
     // credentials is dont contain value prefix, eg a@a.com instead of username:a@a.com
     let criteria = {pk: `username#${credentials.username}`, sk: 'const#USER'}; // config search for user
     let selection = this.select(criteria); // get users recorded account
@@ -241,7 +238,6 @@ export default class DbClient {
     delete credentials['password'];
 
     return {credentials: credentials, authentication: authentication};
-    */
   }
-
+*/
 }

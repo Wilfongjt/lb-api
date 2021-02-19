@@ -3,31 +3,75 @@
 
 version: '3'
 services:
-  api:
-    image: lyttlebit/hapi-api
 
+  #############
+  # POSTGRES
+  # https://hub.docker.com/_/postgres
+  #########
+  db:
     build:
-      context: ./hapi-api
-
-    command: >
-      sh -c "npm install && npm install nodemon && npm run dev"
+        context: ./one_db
+        dockerfile: dockerfile-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_JWT_SECRET=${POSTGRES_JWT_SECRET}
+      - LB_GUEST_PASSWORD=${LB_GUEST_PASSWORD}
+      - LB_WODEN=${LB_WODEN}
+      - LB_ENV=${LB_ENV}
 
     volumes:
-      - ./hapi-api:/usr/src/api
+      # anything in initdb directory is created in the database
+      - "./one_db/sql:/docker-entrypoint-initdb.d"
 
-    ports:
-      - "${LB_API_PORT}:5555"
-
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - LB_API_PORT=${LB_API_PORT}
-      - LB_API_HOST=${LB_API_HOST}
-      - LB_JWT_SECRET=${LB_JWT_SECRET}
-
-    #networks:
-    #  - lb_backend
-
+      # Uncomment this if you want to persist the data.
+      #- "~/.data/aad_db/pgdata:/var/lib/postgresql/data"
+    networks:
+      - lb-backend
     restart: always
+
+#  api:
+#    image: lyttlebit/hapi-api
+
+#    build:
+#      context: ./hapi-api
+
+#    command: >
+#      sh -c "npm install && npm install nodemon && npm run dev"
+
+#    volumes:
+#      - ./hapi-api:/usr/src/api
+
+#    ports:
+#      - "${LB_API_PORT}:5555"
+
+#    environment:
+#      - NODE_ENV=${NODE_ENV}
+#      - LB_API_PORT=${LB_API_PORT}
+#      - LB_API_HOST=${LB_API_HOST}
+#      - LB_JWT_SECRET=${LB_JWT_SECRET}
+#      - PGHOST=${PGHOST}
+#      - PGDATABASE=${PGDATABASE}
+#      - PGUSER=${PGUSER}
+#      - PGPASSWORD=${PGPASSWORD}
+#      - DATABASE_URL=postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}:5433/${PGDATABASE}
+      #- DATABASE_URL=postgres://user:pass@postgres:5432/db
+#    depends_on:
+#      - db
+
+#    links:
+#      - "db"
+
+#    restart: always
+
+networks:
+  lb-backend:
+    driver: bridge
+
+
       #- JSON_DB=${JSON_DB}
       #- JSON_DB_PORT=${JSON_DB_PORT}
       #- JSON_DB_HOST=${JSON_DB_HOST}

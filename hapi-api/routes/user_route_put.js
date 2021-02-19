@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import DbClient from '../lib/clients/db_client.js';
+import DbClientRouter from '../lib/clients/db_client_router.js';
 import { ChelateUser } from '../lib/chelates/chelate_user.js';
 /*
 Put Update
@@ -16,7 +16,7 @@ module.exports = {
         notes: 'Returns ',
         tags: ['api'],
         handler: function (req, h) {
-          let client = new DbClient().connect();
+          let client = new DbClientRouter().connect();
           let payload = req.payload;
           let updateResponse = client.update(payload);
           return updateResponse;
