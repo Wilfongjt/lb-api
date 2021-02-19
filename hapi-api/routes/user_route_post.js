@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import DbClient from '../lib/clients/db_client.js';
+import DbClientRouter from '../lib/clients/db_client_router.js';
 /*
 Post Insert
 * requires a user-token
@@ -15,7 +15,7 @@ module.exports = {
         notes: 'Returns ',
         tags: ['api'],
         handler: function (req, h) {
-          let client = new DbClient().connect();
+          let client = new DbClientRouter().connect();
           let payload_form = req.payload;
           let signupResponse = client.signup(payload_form);
 

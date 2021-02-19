@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import DbClient from '../lib/clients/db_client.js';
+import DbClientRouter from '../lib/clients/db_client_router.js';
 
 module.exports = {
   method: 'POST',
@@ -9,7 +9,7 @@ module.exports = {
         notes: 'Returns a {credentials: {username: email}, authentication: {token: JWT} | false }',
         tags: ['api'],
         handler: function (req, h) {
-          let client = new DbClient().connect();
+          let client = new DbClientRouter().connect();
           let signinResponse = client.signin(req.payload);
           return signinResponse;
         },

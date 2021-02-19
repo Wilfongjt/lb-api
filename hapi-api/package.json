@@ -16,7 +16,8 @@
     "dev": "nodemon --trace-warnings --exec babel-node server.js",
     "run": "babel-node server.js",
     "build": "babel . -d ./dist --ignore=\"node_modules\"",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test2": "jest --coverage -detectOpenHandles"
   },
   "author": "James Wilfong <wilfongjt@gmail.com>",
   "license": "MIT",
@@ -38,6 +39,7 @@
     "hapi-swagger": "^14.1.0",
     "joi": "^17.3.0",
     "json-query": "^2.2.2",
+    "pg": "^8.5.1",
     "uuid": "^8.3.2"
   }
 }

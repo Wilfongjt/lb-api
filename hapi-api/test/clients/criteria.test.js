@@ -17,6 +17,24 @@ import { CriteriaBest } from '../../lib/clients/criteria.js';
 
 describe('Criteria', () => {
   // Initialize
+  test('Criteria(null) ', () => {
+    expect(() => {
+      new Criteria(null);
+    }).toThrow();
+  });
+
+  test('Criteria(<string>) ', () => {
+    expect(() => {
+      new Criteria('');
+    }).toThrow();
+  });
+
+  test('Criteria({}) ', () => {
+    expect(() => {
+      new Criteria({});
+    }).toThrow();
+  });
+
   test('Criteria', () => {
     let chelate = {
       pk: "username#abc@xyz.com",
@@ -80,43 +98,57 @@ describe('Criteria', () => {
   })
 
 
-    test('CriteriaBest PK SK', () => {
-      let chelate = {
-        pk: "username#abc@xyz.com",
-        sk: "const#USER",
-        tk: "guid#520a5bd9-e669-41d4-b917-81212bc184a3",
-        form: {
-          "username":"abc@xyz.com",
-           "displayname":"abc",
-           "password":"a1A!aaaa"
-        }
-      };
+  test('CriteriaBest PK SK', () => {
+    let chelate = {
+      pk: "username#abc@xyz.com",
+      sk: "const#USER",
+      tk: "guid#520a5bd9-e669-41d4-b917-81212bc184a3",
+      form: {
+        "username":"abc@xyz.com",
+         "displayname":"abc",
+         "password":"a1A!aaaa"
+      }
+    };
 
-      let criteria = new CriteriaBest(chelate);
-      //console.log('*** CriteriaBest', criteria);
-      expect(criteria).toBeDefined();
-      expect(criteria.pk).toBeTruthy();
-      expect(criteria.sk).toBeTruthy();
-      expect(criteria.tk).toBeFalsy();
+    let criteria = new CriteriaBest(chelate);
+    //console.log('*** CriteriaBest', criteria);
+    expect(criteria).toBeDefined();
+    expect(criteria.pk).toBeTruthy();
+    expect(criteria.sk).toBeTruthy();
+    expect(criteria.tk).toBeFalsy();
 
-    })
-    test('CriteriaBest PK SK', () => {
-      let chelate = {
-        sk: "const#USER",
-        tk: "guid#520a5bd9-e669-41d4-b917-81212bc184a3",
-        form: {
-          "username":"abc@xyz.com",
-           "displayname":"abc",
-           "password":"a1A!aaaa"
-        }
-      };
+  })
+  test('CriteriaBest PK SK', () => {
+    let chelate = {
+      sk: "const#USER",
+      tk: "guid#520a5bd9-e669-41d4-b917-81212bc184a3",
+      form: {
+        "username":"abc@xyz.com",
+         "displayname":"abc",
+         "password":"a1A!aaaa"
+      }
+    };
 
-      let criteria = new CriteriaBest(chelate);
-      //console.log('*** CriteriaBest', criteria);
-      expect(criteria).toBeDefined();
-      expect(criteria.pk).toBeFalsy();
-      expect(criteria.sk).toBeTruthy();
-      expect(criteria.tk).toBeTruthy();
+    let criteria = new CriteriaBest(chelate);
+    //console.log('*** CriteriaBest', criteria);
+    expect(criteria).toBeDefined();
+    expect(criteria.pk).toBeFalsy();
+    expect(criteria.sk).toBeTruthy();
+    expect(criteria.tk).toBeTruthy();
 
-    })
+  })
+
+  test('CriteriaBest XK YK', () => {
+    let chelate = {xk:"woden", yk:"woden@citizenlabs.org"};
+
+    let criteria = new CriteriaBest(chelate);
+    //console.log('*** CriteriaBest', criteria);
+    expect(criteria).toBeDefined();
+    expect(criteria).toEqual(chelate);
+
+
+  })
+
+
+
 });

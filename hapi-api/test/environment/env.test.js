@@ -40,7 +40,9 @@ describe('LB Environment Vars', () => {
   test('LB_JWT_SECRET Environment Variable', () => {
     expect(process.env.LB_JWT_SECRET).toBeDefined();
   })
-
+  test('DATABASE_URL Environment Variable', () => {
+    expect(process.env.DATABASE_URL).toBeDefined();
+  })
 });
 /*
 describe('JSON DB Environment Vars', () => {
