@@ -573,7 +573,7 @@ CREATE OR REPLACE FUNCTION one_version_0_0_1.signin(guest_token TEXT,credentials
             and _credentials ? 'password') then    -- validate name and password
         return '{"status":"400","msg":"Bad Request"}'::JSONB;
     end if;
-    
+
     SELECT public.sign(row_to_json(r), current_setting('app.settings.jwt_secret')) AS token into _user_token
          FROM (
            SELECT

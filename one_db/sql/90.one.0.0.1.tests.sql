@@ -866,7 +866,7 @@ BEGIN;
   );
 
   -- TOKEN TESTS
-  
+
   -- TEST: Test event_logger Insert
   SELECT * FROM finish();
 
