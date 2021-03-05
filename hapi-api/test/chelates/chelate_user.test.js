@@ -13,7 +13,6 @@ import { ChelateUser } from '../../lib/chelates/chelate_user.js';
 
 describe('ChelateUser New', () => {
   // Initialize
-
   test('new ChelateUser', () => {
    let form = {
      "username":"abc@xyz.com",

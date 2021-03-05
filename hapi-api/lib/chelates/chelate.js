@@ -72,12 +72,14 @@ export class Chelate {
     }
     // chelate has to have all keys in key_map
     this['form'] =JSON.parse(JSON.stringify(form));
+    
     this['active'] = true;
 
     let dat = new Date();
     this['created'] = dat;
     // updated is changed in the update process
     this['updated'] = dat;
+
     return this;
   }
   _assignChelate(key_map, chelate) {

@@ -25,18 +25,5 @@ export class ChelateHelper {
 
     return final_chelate;
   }
-  /*
-  resolve(chelate_to, chelate_from) {
-
-    let copy = JSON.parse(JSON.stringify(chelate_to))
-    if (copy) {
-      for (let k in chelate_from.form) {
-        copy.form[k]=chelate_from.form[k];
-      }
-    }
-    return copy;
-  }
-
-  */
 
 }

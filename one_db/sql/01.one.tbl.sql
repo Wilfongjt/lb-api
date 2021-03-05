@@ -20,13 +20,17 @@
 \set lb_env `echo "'$LB_ENV'"`
 \set postgres_jwt_secret `echo "'$POSTGRES_JWT_SECRET'"`
 \set lb_guest_password `echo "'$LB_GUEST_PASSWORD'"`
-\set lb_woden `echo "'$LB_WODEN'"`
+\set lb_jwt_claims `echo "'$LB_JWT_CLAIMS'"`
+
+--\set lb_woden `echo "'$LB_WODEN'"`
 
 
 select :lb_env as lb_env;
 select :lb_guest_password as lb_guest_password;
 select :postgres_jwt_secret as postgres_jwt_secret;
-select :lb_woden as lb_woden, pg_typeof(:lb_woden::JSONB) as type;
+select :lb_jwt_claims as lb_jwt_claims;
+
+--select :lb_woden as lb_woden, pg_typeof(:lb_woden::JSONB) as type;
 
 --------------
 -- DATABASE
@@ -73,8 +77,8 @@ j@j.com
 create table if not exists
     one_base.one  (
         pk TEXT DEFAULT uuid_generate_v4 (),
-        sk varchar(256) not null check (length(sk) < 256),
-        tk varchar(256) not null check (length(sk) < 256),
+        sk TEXT not null check (length(sk) < 500),
+        tk TEXT DEFAULT uuid_generate_v4 (),
         form jsonb not null,
         active BOOLEAN NOT NULL DEFAULT true,
         created timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -168,7 +172,7 @@ grant TRIGGER on one_base.one  to editor_one;
 ----------------
 -- USER: Setup woden user
 ----------------
-insert into one_base.one  (sk, tk, form) values ( :lb_woden::JSONB ->> 'name','woden',(:lb_woden::JSONB || '{"type":"woden", "roles":"woden,admin"}'::JSONB) );
+--insert into one_base.one  (sk, tk, form) values ( :lb_woden::JSONB ->> 'name','woden',(:lb_woden::JSONB || '{"type":"woden", "roles":"woden,admin"}'::JSONB) );
 
 
   -----------------
@@ -264,15 +268,30 @@ insert into one_base.one  (sk, tk, form) values ( :lb_woden::JSONB ->> 'name','w
     DECLARE actual_role TEXT;
 
   BEGIN
+    -- is token null
     -- does role in token match expected role
     -- use db parameter app.settings.jwt_secret
     -- event the token
     -- return true/false
+
+    if _token is NULL
+      or expected_role is NULL
+    then
+      return false;
+    end if;
+
     good:=false;
-
-    select payload ->> 'role' as role into actual_role  from verify(_token, current_setting('app.settings.jwt_secret'));
-
-    if expected_role = actual_role then
+    BEGIN
+      select payload ->> 'scope' as role into actual_role
+        from verify(_token, current_setting('app.settings.jwt_secret'));
+    EXCEPTION
+      when sqlstate '22021' then
+        RETURN false;
+    	when others then
+        RAISE NOTICE 'is_valid_token has unhandled sqlstate %', sqlstate;
+        RETURN false;
+    END;
+    if strpos(actual_role,expected_role) > 0 then
       good := true;
     end if;
 
@@ -281,3 +300,38 @@ insert into one_base.one  (sk, tk, form) values ( :lb_woden::JSONB ->> 'name','w
   -- GRANT: Grant Function Permissions
   grant EXECUTE on FUNCTION one_base.is_valid_token(TEXT, TEXT) to guest_one; -- C
   grant EXECUTE on FUNCTION one_base.is_valid_token(TEXT, TEXT) to editor_one; -- C
+
+/*
+
+
+  CREATE OR REPLACE FUNCTION one_base.is_valid_token(_token TEXT, expected_role TEXT) RETURNS Boolean
+  AS $$
+
+    DECLARE good Boolean;
+    DECLARE actual_role TEXT;
+
+  BEGIN
+    -- is token null
+    -- does role in token match expected role
+    -- use db parameter app.settings.jwt_secret
+    -- event the token
+    -- return true/false
+
+    if _token is NULL
+      or expected_role is NULL
+    then
+      return false;
+    end if;
+
+    good:=false;
+
+      select payload ->> 'role' as role into actual_role
+        from verify(_token, current_setting('app.settings.jwt_secret'));
+
+    if expected_role = actual_role then
+      good := true;
+    end if;
+
+    RETURN good;
+  END;  $$ LANGUAGE plpgsql;
+*/
