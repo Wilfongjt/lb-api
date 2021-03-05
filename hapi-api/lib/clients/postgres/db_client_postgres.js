@@ -1,14 +1,44 @@
 import { Client } from 'pg';
 import { CriteriaBest } from '../criteria.js';
+import { CriteriaPK } from '../criteria.js';
 
 export default class DbClientPostgres extends Client {
   // always starts with an empty table
 
   constructor (config) {
     super(config);
+    this.guest_token = config.guest_token;
     //console.log('DbClientPostgres config',config);
   }
+  async startTransaction(){
+    //await client.query('BEGIN');
+    await super.query('BEGIN');
+  }
+  async rollbackTransaction(){
+    //await client.query('ROLLBACK');
+    await super.query('ROLLBACK');
 
+  }
+  async commitTransaction() {
+    //await client.query('COMMIT');
+    await super.query('COMMIT');
+
+  }
+  endTransaction() {
+    super.release();
+  }
+  /*
+    try{
+      await this.startTransaction();
+      await this.query(some quer str);
+      await this.commitTransaction();
+    } catch(e){
+      await this.rollbackTransaction();
+    } finally {
+       this.releaseTransaction();
+    }
+  }
+  */
   /*
   environment:
       - PGHOST: 'db'
@@ -16,194 +46,254 @@ export default class DbClientPostgres extends Client {
       - PGUSER: 'postgres'
       - PGPASSWORD: 'postgres'
   */
-async query(select_criteria) {
-  let result = [];
-  let error;
-
-  try {
-    //console.log('type', typeof(select_criteria));
-    //console.log('select_criteria',select_criteria);
-
-    // validate criteria
-    let criteriaBest = new CriteriaBest(select_criteria);// throws exceptions
-
-    //console.log('criteriaBest',criteriaBest);
-    let query = {
-      text: 'select * from one_version_0_0_1.query($1)',
-      values: [JSON.stringify(criteriaBest)]
-    };
-
-    let res = await super.query(query);
-
-    //console.log('A res',res);
-    //console.log('rows', res.rows);
-    result = res.rows.map((result) => {delete result.results.form['password']; return result.results;});
-
-  } catch(e) {
-    //console.error(e.stack);
-    error = e.message;
-  } finally{
-    let selection = {criteria: select_criteria, selection: result};
-    if(error) {
-      selection.error=error;
-    }
-    //console.log('out *****************');
-    return selection;
-  }
-
-}
-/*
   async query(select_criteria) {
-    await this.connect();
-
-    //let res = await this.query('SELECT $1::text as message', ['Hello world!']);
-    let res = await this.query('Select NOW()');
-    //console.log('res', res);
-    //await this.end() ;
-      client.release();
-    return res;
-
-  }
-*/
-   insert(chelate) {}
-   delete(criteria) {}
-   update(update_chelate) {}
-   signup(credentials) {}
-   signin(credentials) {}
-/*
-
-  select(select_criteria) { //
-    // {pk:"*", sk:"*"}
-    // {sk:"*", tk:"*"}
     let result = [];
     let error;
-    if (typeof(select_criteria)==='string') {
-      return {criteria: select_criteria, selection: this.table.table};
-    }
+    let status = '200';
+    let msg = 'OK';
+    try {
+      // validate criteria
+      let criteriaBest = new CriteriaBest(select_criteria);// throws exceptions
+      let query = {
+        text: 'select * from one_version_0_0_1.query($1)',
+        values: [JSON.stringify(criteriaBest)]
+      };
+      let res = await super.query(query);
+      result = res.rows.map((result) => {delete result.results.form['password']; return result.results;});
+//console.log('query result', result);
+//console.log('query result.length', result.length);
+//console.log('query typeof(result.selection)', typeof(result.selection));
 
-    //let criteria = this.getCriteria(select_criteria);
-    let criteria = select_criteria;
-
-    for (let i in this.table.table) { // search for criteria
-
-      let item = this.table.table[i];
-      //console.log('item', item);
-      if (criteria.pk && criteria.sk ) { // pk sk
-        //console.log('select pk && sk');
-        if(item.pk === criteria.pk && item.sk === criteria.sk){
-          result.push(this.table.table[i]);
-        }
-      } else if (criteria.sk && criteria.tk) { // sk tk
-        if(item.sk === criteria.sk && item.tk === criteria.tk){
-          result.push(this.table.table[i]);
-        }
-      } else if(criteria.sk) { // sk
-        if(item.sk === criteria.sk ){
-          result.push(this.table.table[i]);
-        }
-      } else {
-        error = 'Missing pk, sk, tk!';
-        break;
+      if (result.length === 0) {
+        status = '404';
+        msg = 'Not Found';
       }
+    } catch(e) {
+      error = e.message;
+      if (error === 'Missing Criteria') {
+        status = '400';
+        msg = 'Bad Request';
+      } else if (error === 'Must initialize Criteria with object.') {
+        status = '400';
+        msg = 'Bad Request';
+      }
+      //console.log('query error ', e);
+    } finally{
+      let selection = {status:status, msg:msg, criteria: select_criteria, selection: result};
+      if(error) {
+        selection.error=error;
+      }
+      return selection;
     }
+  }
+  /*
+    async query(select_criteria) {
+      await this.connect();
 
-    let selection = {criteria: criteria, selection: result};
-    if (error) {
-      selection.error = error;
+      //let res = await this.query('SELECT $1::text as message', ['Hello world!']);
+      let res = await this.query('Select NOW()');
+      //console.log('res', res);
+      //await this.end() ;
+        client.release();
+      return res;
+
     }
+  */
+  async delete(delete_criteria) {
+   let result = {};
+   let error;
+   let cnt = 0;
+   let msg = 'OK';
+   let status = '200';
+   try {
+     //await this.startTransaction();
 
-    return selection;
+     // already connected
+     let criteriaPK = new CriteriaPK(delete_criteria);
+     let del = {
+       text: 'select * from one_version_0_0_1.delete($1)',
+       values: [JSON.stringify(criteriaPK)]
+     };
+     // query is the correct call
+     let res = await super.query(del);
+
+     result = JSON.parse(JSON.stringify(res.rows[0].delete.deletion));
+     //await this.commitTransaction();
+     //console.log('result ', result);
+     //console.log('result.msg ', result['msg']);
+     if (result['msg']) {
+       msg = 'Not Found';
+       status = '404';
+     }
+     //console.log('delete out');
+   } catch(e) {
+     //console.error(e);
+     error = {msg:e.message};
+     //this.rollbackTransaction();
+   } finally {
+     let deletion = {status: status, msg:msg, criteria: delete_criteria, deletion: result};
+     if(error) {
+       deletion.error=error;
+     }
+     ////this.releaseTransaction();
+     return deletion;
+   }
   }
 
-  insert(chelate) {
-
-    if (!this.table) {
-      throw new Error('Not connected to data');
-    }
-    let chelate_copy = JSON.parse(JSON.stringify(chelate));
-
-    let finding = this.select(new CriteriaPK(chelate_copy));
-
-    if (finding.selection.length > 0) { // duplicate
-      return {insertion: false, error: 'Duplicate not allowed!'};
-    }
-
-    this.table.table.push(chelate_copy);
-
-    // insertResponse
-    return {insertion: chelate_copy};
-  }
-
-
-  delete(criteria) {
-    let result=[];
+  async insert(chelate) {
+    let result = {};
     let error;
+    let status = '200';
+    let msg = 'OK';
+    let insertion = {};
+    try {
+      //await this.startTransaction();
 
-    for (let i in this.table.table) {
+      //console.log('insert 1');
+      //console.log('insert 1', chelate);
+      // validate JWT
 
-      let item = this.table.table[i];
-      if (criteria.pk && criteria.sk ) { // PK and SK
-        if(item.pk === criteria.pk && item.sk === criteria.sk){
-          result.push(JSON.parse(JSON.stringify(item)));
-          delete this.table.table.splice(i,1);
-        }
-      } else if (criteria.sk && criteria.tk) { // SK and TK
-        if(item.sk === criteria.sk && item.tk === criteria.tk){
-          result.push(JSON.parse(JSON.stringify(item)));
-          delete this.table.table.splice(i,1);
-
-        }
-      } else if(criteria.sk) { // SK only
-        if(item.sk === criteria.sk ){
-          result.push(JSON.parse(JSON.stringify(item)));
-          delete this.table.table.splice(i,1);
-        }
-      } else {
-        //throw new Error('Missing pk, sk, or tk!');
-        error = 'Missing pk, sk, tk!';
-        break;
+      // validate chelate
+      if ( !(chelate.sk && chelate.form) ) {
+        status = '400';
+        msg = 'Bad Request';
+        throw Error('Bad Request');
       }
+      // prepare insert
+      let ins = {
+        text: 'select * from one_version_0_0_1.insert($1)',
+        values: [JSON.stringify(chelate)]
+      };
+      // query is the correct call
+      let res = await super.query(ins);
+      //console.log('client res', res);
+      //console.log('client res.rows[0]', JSON.parse(JSON.stringify(res.rows[0])) );
+      //console.log('client res.rows[0].insert.insertion', JSON.parse(JSON.stringify(res.rows[0].insert.insertion)) );
 
+      status = res.rows[0].insert.status;
+      //console.log('status',status);
+      msg = res.rows[0].insert.msg;
+      //console.log('msg',msg);
+
+      insertion = JSON.parse(JSON.stringify(res.rows[0].insert.insertion));
+      //console.log('insertion', insertion);
+      //await this.commitTransaction();
+
+    } catch (e) {
+       result['error']=e.message;
+       //this.rollbackTransaction();
+
+    } finally {
+      //this.releaseTransaction();
+
+      return {status: status, msg: msg, insertion: insertion};
     }
 
-    let deletion = {criteria: criteria, deletion: result};
-    if (error) {
-      deletion.error = error;
-    }
-
-    return deletion;
   }
 
-  update(update_chelate) {
-    // update current record
-    // strategy:  find record,
-    //            resolve differences,
-    //            delete record,
-    //            insert resolved record
-    // return record before updated
-    let chelateHelper = new ChelateHelper();
-    let result = [];
-    let criteria = JSON.parse(JSON.stringify(new CriteriaBest(update_chelate))); // use to find record and as part of return
-    let selectionResult = this.select(criteria); // find diff
+  async update(chelate) {
+    // update by primary key, pk and sk
+    let result = {};
+    let error;
+    let status = '200';
+    let msg = 'OK';
+    try {
+      //await this.startTransaction();
 
-    let cur_chelate = selectionResult.selection[0];
-    let result_value = JSON.parse(JSON.stringify(cur_chelate)) ;
-    if (result_value.form.password) {
-      delete result_value.form.password;
+      //console.log('update 1');
+      //console.log('pk', !(update_chelate.pk));
+      if ( !(chelate.pk && chelate.sk && chelate.form) ) {
+        status = '400';
+        msg = 'Bad Request';
+        throw Error(msg);
+      }
+      //console.log('update 2');
+
+      // prepare insert
+      let upd = {
+        text: 'select * from one_version_0_0_1.update($1)',
+        values: [JSON.stringify(chelate)]
+      };
+      //console.log('update 3');
+      // query is the correct call
+      let res = await super.query(upd);
+      //console.log('update 4');
+      //console.log('client res', res);
+      //console.log('client res.rows[0]', JSON.parse(JSON.stringify(res.rows[0])) );
+      status = res.rows[0].update.status;
+      msg = res.rows[0].update.msg;
+      //await this.commitTransaction();
+
+    } catch (e) {
+      //console.log('update 5');
+      msg = e.message;
+       if (e.message === 'Bad Request') {
+         status = '400';
+       } else if(e.message === 'Not Found'){
+         status = '404';
+       } else {
+         status = '500';
+       }
+       result['error']=e.message;
+       //this.rollbackTransaction();
+
+    } finally {
+      //console.log('update out');
+      //this.releaseTransaction();
+
+      return {status: status, msg: msg};
     }
-    result.push(result_value); // prepare return
-    // resolve differences
-    let resolved_chelate = chelateHelper.resolve(cur_chelate, update_chelate);
-    this.delete(criteria); // delete existing record
-    this.insert(resolved_chelate); // insert the resolve record
-
-    // format return
-    let updates = {criteria: criteria, updates: result};
-    //if (error) {
-    //  updates.error = error;
-    //}
-    return updates;
   }
+  set(name, value) {
+
+  }
+  async signin(credentials) {
+    let result = {};
+    let error;
+    let status = '200';
+    let msg = 'OK';
+    let token;
+    try {
+      if ( !this.guest_token || !credentials ) {
+        status = '403';
+        msg = 'Forbidden';
+        throw Error(msg);
+      }
+      /*
+      let set = {
+        text: 'select * ($1,$2)',
+        values: [this.getGuestToken(),JSON.stringify(credentials)]
+      };
+      */
+      let sin = {
+        text: 'select * from one_version_0_0_1.signin($1,$2)',
+        values: [this.guest_token,JSON.stringify(credentials)]
+      };
+
+      let res = await super.query(sin);
+
+      status = res.rows[0].signin.status;
+      msg = res.rows[0].signin.msg;
+    } catch (e) {
+      msg = e.message;
+       if (e.message === 'Bad Request') {
+         status = '400';
+       } else if(e.message === 'Forbidden') {
+         status = '403';
+       } else if(e.message === 'Not Found'){
+         status = '404';
+       } else {
+         console.log('e.message',e.message);
+         status = '500';
+       }
+       token = '';
+       result['error']=e.message;
+    } finally {
+      return {status: status, msg: msg, token: token};
+    }
+  }
+  /*
+
 
   ////////////
   // SignUp

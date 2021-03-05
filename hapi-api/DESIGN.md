@@ -3,6 +3,16 @@
                    /         /
 [client] <---> [API] <---> [Database]
 ```
+```
+        [DBClientPostgres[client]]
+                |
+/user (GET)     +---- query
+/user (PUT)     +---- update
+/user (DELETE)  +---- delete
+/user (POST)    +---- insert
+```
+
+
 ## Environment
 ```
   POSTGRES_DB=one_db
