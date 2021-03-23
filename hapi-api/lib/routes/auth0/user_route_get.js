@@ -1,7 +1,8 @@
 import Joi from 'joi';
-import DbClientRouter from '../lib/clients/db_client_router.js';
-import { ChelateUser } from '../lib/chelates/chelate_user.js';
-//import { UserAliasChelate } from '../lib/chelate.js';
+//import DbClientRouter from '../clients/db_client_router.js';
+import DbFactory from '../clients/postgres/db_factory.js'; //B
+import { ChelateUser } from '../chelates/chelate_user.js';
+//import { UserAliasChelate } from '../chelate.js';
 // app-name   guest
 //   |          |
 
@@ -14,7 +15,7 @@ module.exports = {
         notes: 'Returns ',
         tags: ['api'],
         handler: function (req, h) {
-          let client = new DbClient().connect();
+          let client = new DbFactory().connect();
           console.log('req', req);
           let selectResponse = {criteria:{pk:'a',sk:'b'}, selection: {message:'hihapi'}};
 

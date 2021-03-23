@@ -101,18 +101,14 @@ extra code
 \set lb_env `echo "'$LB_ENV'"`
 \set postgres_jwt_secret `echo "'$POSTGRES_JWT_SECRET'"`
 \set lb_guest_password `echo "'$LB_GUEST_PASSWORD'"`
+\set api_password `echo "'$API_PASSWORD'"`
 \set lb_jwt_claims     `echo "'$LB_JWT_CLAIMS'"`
---\set lb_woden `echo "'$LB_WODEN'"`
+\set api_scope     `echo "'$API_SCOPE'"`
 
---select :lb_env as lb_env;
---select :lb_guest_password as lb_guest_password;
---select :postgres_jwt_secret as postgres_jwt_secret;
-----select :lb_woden as lb_woden, pg_typeof(:lb_woden::JSONB) as type;
+
 select :lb_jwt_claims as lb_jwt_claims;
+select :api_scope as api_scope;
 
---select :lb_guest_password;
---select :postgres_jwt_secret ;
---select :lb_woden ;
 --------------
 -- DATABASE
 --------------
@@ -137,13 +133,38 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ROLE: Create Roles
 
-CREATE ROLE authenticator noinherit login password :lb_guest_password ;
 
-CREATE ROLE guest_one nologin noinherit; -- permissions to execute app() and insert type=owner into one_schema_1_0_0.adopt_a_drain
-CREATE ROLE editor_one nologin noinherit; -- permissions to execute app() and insert type=app into one_schema_1_0_0.adopt_a_drain
+--CREATE ROLE authenticator noinherit login password :lb_guest_password ;
+--CREATE ROLE  api_user_one noinherit login password :api_password;
+
+
+--CREATE ROLE guest_one nologin noinherit; -- permissions to execute app() and insert type=owner into one_schema_1_0_0.adopt_a_drain
+-- signin
+
+--CREATE ROLE editor_one nologin noinherit; -- permissions to execute app() and insert type=app into one_schema_1_0_0.adopt_a_drain
+-- one
+-- query, insert, update, delete
+
 CREATE ROLE process_logger_role nologin; -- remove when 1.2.1 is removed
 CREATE ROLE event_logger_role nologin; -- as 1.2.1, replaces process_logger_role
-
+--CREATE ROLE event_logger_role nologin;
 -- GRANT: Grant authenticator more permissions
-grant guest_one to authenticator;
-grant editor_one to authenticator;
+--grant guest_one to authenticator;
+--grant editor_one to authenticator;
+--grant api_user_one to authenticator;
+--grant editor_one to api_user_one;
+
+--CREATE ROLE guest_unable;
+-----
+--CREATE ROLE api_guest nologin noinherit; -- one, signin, and user_ins
+--grant api_guest to authenticator;
+
+--create a user that you want to use the database as:
+create role api_guest;
+create role api_user;
+
+--create the user for the web server to connect as:
+create role guest_authenticator noinherit login password :api_password;
+
+-- allow guest_authenticator to switch to api_guest
+grant api_guest to guest_authenticator; --this looks backwards but is correct.

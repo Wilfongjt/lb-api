@@ -1,5 +1,7 @@
 import Joi from 'joi';
-import DbClientRouter from '../lib/clients/db_client_router.js';
+//import DbClientRouter from '../clients/db_client_router.js';
+//import DbFactory from '../clients/postgres/db_factory.js'; // C
+import { Pool } from 'pg';
 /*
 Post Insert
 * requires a user-token
@@ -15,7 +17,7 @@ module.exports = {
         notes: 'Returns ',
         tags: ['api'],
         handler: function (req, h) {
-          let client = new DbClientRouter().connect();
+          let client = new DbFactory().connect();
           let payload_form = req.payload;
           let signupResponse = client.signup(payload_form);
 

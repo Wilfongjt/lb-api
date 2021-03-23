@@ -11,8 +11,10 @@ export class ChelateUser extends Chelate {
       sk:{const: "USER"},
       tk:{guid: "*"}        // * is flag to calculate guid when not provided
     },form);
+    /*
     let password = new Password();
     this.form.password = password.hashify(this.form.password);
+    */
   }
 
 };
