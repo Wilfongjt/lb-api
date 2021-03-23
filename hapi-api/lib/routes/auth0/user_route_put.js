@@ -1,6 +1,7 @@
 import Joi from 'joi';
-import DbClientRouter from '../lib/clients/db_client_router.js';
-import { ChelateUser } from '../lib/chelates/chelate_user.js';
+//import DbClientRouter from '../clients/db_client_router.js';
+import DbFactory from '../clients/postgres/db_factory.js'; //D
+import { ChelateUser } from '../chelates/chelate_user.js';
 /*
 Put Update
 * requires a user-token
@@ -16,7 +17,7 @@ module.exports = {
         notes: 'Returns ',
         tags: ['api'],
         handler: function (req, h) {
-          let client = new DbClientRouter().connect();
+          let client = new DbFactory().connect();
           let payload = req.payload;
           let updateResponse = client.update(payload);
           return updateResponse;

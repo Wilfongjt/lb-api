@@ -14,7 +14,7 @@
 
 \c one_db;
 
-SET search_path TO one_version_0_0_1, public;
+SET search_path TO api_0_0_1, public;
 
 --------------------
 -- EVENT_LOGGER Tests
@@ -25,7 +25,7 @@ BEGIN;
   -- TEST: Test event_logger Insert
 
   SELECT is (
-    one_base.event_logger(
+    base_0_0_1.event_logger(
       '{
       "type":"test",
       "name":"some stuff",
@@ -52,29 +52,29 @@ ROLLBACK;
 -- app-token is
 
 
--- one_version_0_0_1.element(JSON) -- insert(app-body)
--- one_version_0_0_1.element(JSON, JSON) -- update(criteria, app-body)
--- one_version_0_0_1.elements(JSON) -- select(criteria)
--- one_version_0_0_1.elements(JSON) -- delete(critera)
+-- api_0_0_1.element(JSONB) -- insert(app-body)
+-- api_0_0_1.element(JSON, JSON) -- update(criteria, app-body)
+-- api_0_0_1.elements(JSON) -- select(criteria)
+-- api_0_0_1.elements(JSON) -- delete(critera)
 
--- one_version_0_0_1.geography(JSON) -- insert(app-body)
--- one_version_0_0_1.geography(JSON, JSON) -- update(criteria, app-body)
--- one_version_0_0_1.geography(JSON) -- select(criteria)
--- one_version_0_0_1.geography(JSON) -- delete(critera)
+-- api_0_0_1.geography(JSONB) -- insert(app-body)
+-- api_0_0_1.geography(JSON, JSON) -- update(criteria, app-body)
+-- api_0_0_1.geography(JSON) -- select(criteria)
+-- api_0_0_1.geography(JSON) -- delete(critera)
 
--- one_version_0_0_1.user(TEXT, JSON) -- insert(app, app-body)
--- one_version_0_0_1.user(JSON, JSON) -- update(criteria, app-body)
--- one_version_0_0_1.users(JSON) -- select(criteria)
--- one_version_0_0_1.users(JSON) -- delete(critera)
+-- api_0_0_1.user(TEXT, JSONB) -- insert(app, app-body)
+-- api_0_0_1.user(JSON, JSON) -- update(criteria, app-body)
+-- api_0_0_1.users(JSON) -- select(criteria)
+-- api_0_0_1.users(JSON) -- delete(critera)
 BEGIN;
 
   SELECT plan(6);
-
+  -- 1
   SELECT is (
-    one_version_0_0_1.changed_key(
+    base_0_0_1.changed_key(
       '{
         "pk":"username#update@user.com",
-        "sk":"const#USER",
+        "sk":"const#TEST",
         "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
         "form":{
                 "displayname":"k"
@@ -84,17 +84,17 @@ BEGIN;
     false,
     'No key changes when form missing key values and displayname changed 0_0_1'::TEXT
   );
-
+  -- 2
   SELECT is (
-    one_version_0_0_1.changed_key(
+    base_0_0_1.changed_key(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
         	  "username":"update@user.com",
             "displayname":"k",
-            "const": "USER",
+            "const": "TEST",
             "guid": "820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -102,16 +102,17 @@ BEGIN;
     false,
     'No key changes when form displayname changed 0_0_1'::TEXT
   );
+  -- 3
   SELECT is (
-    one_version_0_0_1.changed_key(
+    base_0_0_1.changed_key(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
         	  "username":"CHANGEupdate@user.com",
             "displayname":"k",
-            "const": "USER",
+            "const": "TEST",
             "guid": "820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -119,17 +120,17 @@ BEGIN;
     true,
     'Detect pk key changes 0_0_1'::TEXT
   );
-
+  -- 4
   SELECT is (
-    one_version_0_0_1.changed_key(
+    base_0_0_1.changed_key(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
             "username":"update@user.com",
             "displayname":"k",
-            "const": "CHANGEUSER",
+            "const": "CHANGETEST",
             "guid": "820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -137,17 +138,17 @@ BEGIN;
     true,
     'Detect sk key changes 0_0_1'::TEXT
   );
-
+  -- 5
   SELECT is (
-    one_version_0_0_1.changed_key(
+    base_0_0_1.changed_key(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
             "username":"update@user.com",
             "displayname":"k",
-            "const": "USER",
+            "const": "TEST",
             "guid": "CHANGE820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -155,17 +156,17 @@ BEGIN;
     true,
     'Detect tk key changes 0_0_1'::TEXT
   );
-
+  -- 6
   SELECT is (
-    one_version_0_0_1.changed_key(
+    base_0_0_1.changed_key(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
             "username":"CHANGEupdate@user.com",
             "displayname":"k",
-            "const": "CHANGEUSER",
+            "const": "CHANGETEST",
             "guid": "CHANGE820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -184,7 +185,7 @@ ROLLBACK;
 --==================
 /* value found in table
 'username#update@user.com',
-'const#USER',
+'const#TEST',
 'guid#820a5bd9-e669-41d4-b917-81212bc184a3',
 '{"username":"update@user.com",
         "displayname":"J",
@@ -199,10 +200,10 @@ BEGIN;
   SELECT plan(10);
 
   SELECT ok (
-    (one_version_0_0_1.chelate(
+    (base_0_0_1.chelate(
       '{
         "pk":"username#update@user.com",
-        "sk":"const#USER",
+        "sk":"const#TEST",
         "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
         "form":{
                 "displayname":"k"
@@ -214,10 +215,10 @@ BEGIN;
 
   -- chelate prove 'changed' is immutable 0_0_1
   SELECT ok (
-    one_version_0_0_1.chelate(
+    base_0_0_1.chelate(
       '{
         "pk":"username#update@user.com",
-        "sk":"const#USER",
+        "sk":"const#TEST",
         "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
         "form":{
                 "displayname":"k"
@@ -228,10 +229,10 @@ BEGIN;
     'chelate "changed" is immutable 0_0_1'::TEXT
   );
   SELECT ok (
-    one_version_0_0_1.chelate(
+    base_0_0_1.chelate(
       '{
         "pk":"username#update@user.com",
-        "sk":"const#USER",
+        "sk":"const#TEST",
         "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
         "form":{
                 "displayname":"k"
@@ -243,15 +244,15 @@ BEGIN;
   );
   -- no pk change
   SELECT ok (
-    one_version_0_0_1.chelate(
+    base_0_0_1.chelate(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
         	  "username":"update@user.com",
             "displayname":"k",
-            "const": "USER",
+            "const": "TEST",
             "guid": "820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -261,34 +262,34 @@ BEGIN;
   );
   -- no sk change
   SELECT ok (
-    one_version_0_0_1.chelate(
+    base_0_0_1.chelate(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
         	  "username":"update@user.com",
             "displayname":"k",
-            "const": "USER",
+            "const": "TEST",
             "guid": "820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
-    ) ->> 'sk' = 'const#USER',
+    ) ->> 'sk' = 'const#TEST',
 
     'chelate SK changes when form displayname changed 0_0_1'::TEXT
   );
 
   -- no tk change
   SELECT ok (
-    one_version_0_0_1.chelate(
+    base_0_0_1.chelate(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
         	  "username":"update@user.com",
             "displayname":"k",
-            "const": "USER",
+            "const": "TEST",
             "guid": "820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -297,15 +298,15 @@ BEGIN;
   );
 
   SELECT ok (
-    (one_version_0_0_1.chelate(
+    (base_0_0_1.chelate(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
         	  "username":"CHANGEupdate@user.com",
             "displayname":"k",
-            "const": "USER",
+            "const": "TEST",
             "guid": "820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -315,33 +316,33 @@ BEGIN;
   );
 
   SELECT ok (
-    one_version_0_0_1.chelate(
+    base_0_0_1.chelate(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
             "username":"update@user.com",
             "displayname":"k",
-            "const": "CHANGEUSER",
+            "const": "CHANGETEST",
             "guid": "820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
-    ) ->> 'sk' = 'const#CHANGEUSER',
+    ) ->> 'sk' = 'const#CHANGETEST',
 
     'chelate Detect sk key changes 0_0_1'::TEXT
   );
 
   SELECT ok (
-    one_version_0_0_1.chelate(
+    base_0_0_1.chelate(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
             "username":"update@user.com",
             "displayname":"k",
-            "const": "USER",
+            "const": "TEST",
             "guid": "CHANGE820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -351,15 +352,15 @@ BEGIN;
   );
 
   SELECT ok (
-    one_version_0_0_1.chelate(
+    base_0_0_1.chelate(
       '{
           "pk":"username#update@user.com",
-          "sk":"const#USER",
+          "sk":"const#TEST",
           "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
           "form":{
             "username":"CHANGEupdate@user.com",
             "displayname":"k",
-            "const": "CHANGEUSER",
+            "const": "CHANGETEST",
             "guid": "CHANGE820a5bd9-e669-41d4-b917-81212bc184a3"
           }
         }'::JSONB
@@ -381,12 +382,12 @@ BEGIN;
 
   SELECT plan(3);
 
-  SELECT has_table('one_base', 'one', 'has table');
+  SELECT has_table('base_0_0_1', 'one', 'has table');
 
-  SELECT hasnt_pk('one_base', 'one', 'has no primary key');
+  SELECT hasnt_pk('base_0_0_1', 'one', 'has no primary key');
 
   SELECT has_function(
-      'one_version_0_0_1',
+      'api_0_0_1',
       'query',
       ARRAY[ 'JSON' ],
       'Function query (json) should exist'
@@ -397,91 +398,6 @@ BEGIN;
 ROLLBACK;
 
 
-BEGIN;
-
-  SELECT plan(10);
-
-  SELECT is (
-    one_version_0_0_1.query('{"pk":"*"}'::JSON),
-    '{"msg": "Bad Request", "status": "400"}'::JSONB,
-    'query missing json atts 0_0_1'::TEXT
-  );
-
-  SELECT ok (
-    one_version_0_0_1.query('{"pk":"username#existing@user.com", "sk":"const#USER"}'::JSON) ? 'pk',
-    'query pk sk good 0_0_1'::TEXT
-  );
-
-  SELECT ok (
-    one_version_0_0_1.query('{"pk":"username#existing@user.com", "sk":"*"}'::JSON)::JSONB ? 'pk',
-    'query pk sk:* good 0_0_1'::TEXT
-  );
-
-  SELECT ok (
-    one_version_0_0_1.query('{
-      "sk":"const#USER",
-      "tk": "guid#420a5bd9-e669-41d4-b917-81212bc184a3"}'::JSON)::JSONB ->> 'pk' = 'username#selectchange@user.com',
-    'query sk tk good pk 0_0_1'::TEXT
-  );
-
-  SELECT ok (
-    one_version_0_0_1.query('{"sk":"const#USER", "tk": "*"}'::JSON)::JSONB ->> 'sk' = 'const#USER',
-    'query sk "tk":* good 0_0_1'::TEXT
-  );
-
-  SELECT ok (
-    one_version_0_0_1.query('{"xk":"woden", "yk": "woden@citizenlabs.org"}'::JSON)::JSONB ? 'pk',
-    'query xk yk good 0_0_1'::TEXT
-  );
-  SELECT * FROM finish();
-
-ROLLBACK;
-
-BEGIN;
-
-  SELECT plan(4);
-
-  -- {pk:"username#delete@user.com",sk:"const#USER"}
-  -- {pk:"usename#nonexisting@user.com",sk:"const#USER"}
-  -- Delete returns the deleted item
-  -- Delete only acceptes Primary Key combination i.e., pk and sk
-
-  SELECT throws_ok (
-      'select one_version_0_0_1.delete(''{"sk":"const#USER","tk":"guid#720a5bd9-e669-41d4-b917-81212bc184a3"}''::JSON) ',
-      'PT400'::text,
-      'Bad Request'::text,
-    'delete sk tk bad only pk sk 0_0_1'::TEXT
-  );
-  --SELECT is (
-  --  one_version_0_0_1.delete('{"xk":"guid#720a5bd9-e669-41d4-b917-81212bc184a3","yk":"const#USER"}'::JSON) ->> 'status', '404'::text,
-  --  'delete xk yk bad only pk sk 0_0_1'::TEXT
-  --);
-  SELECT throws_ok (
-      'select one_version_0_0_1.delete(''{"xk":"guid#720a5bd9-e669-41d4-b917-81212bc184a3","yk":"const#USER"}''::JSON) ',
-      'PT400'::text,
-      'Bad Request'::text,
-    'delete sk tk bad only pk sk 0_0_1'::TEXT
-  );
-
-  SELECT ok (
-    one_version_0_0_1.delete('{
-      "pk": "username#unknown@user.com",
-      "sk":"const#USER"
-      }'::JSON)::JSONB ? 'deletion',
-    'delete, user without an account good 0_0_1'::TEXT
-  );
-
-  SELECT ok (
-    one_version_0_0_1.delete('{
-      "pk": "username#delete@user.com",
-      "sk":"const#USER"
-      }'::JSON)::JSONB ? 'deleted',
-    'delete pk sk good 0_0_1'::TEXT
-  );
-
-  SELECT * FROM finish();
-
-ROLLBACK;
 
 
 
@@ -490,96 +406,113 @@ ROLLBACK;
   -- SELECT throws_ok( :sql, :errcode, :ermsg, :description );
 BEGIN;
 
-  SELECT plan(7);
+  SELECT plan(8);
+  -- {"sk":"const#TEST"}
+  -- {"pk":"username#insert2@user.com", "sk":"const#TEST"}
+  -- {"sk":"const#TEST", "tk":"guid#a920a5bd9-e669-41d4-b917-81212bc184a3"}
+  -- {"pk":"username#insert4@user.com", "sk":"const#TEST", "tk":"guid#b920a5bd9-e669-41d4-b917-81212bc184a3"}
 
   --  1
   SELECT is (
-    one_version_0_0_1.insert('{
-      "sk":"const#USER",
+    base_0_0_1.insert('{
+      "sk":"const#TEST",
       "form":{"username":"insert1@user.com",
               "displayname":"J",
               "password":"a1A!aaaa"
             }
-      }'::JSON)::JSONB ->> 'msg',
+      }'::JSONB)::JSONB ->> 'msg',
       'OK'::TEXT,
       'insert sk form good 0_0_1'::TEXT
   );
   -- 2
   SELECT is (
-    one_version_0_0_1.insert('{
+    base_0_0_1.insert('{
       "pk":"username#insert2@user.com",
-      "sk":"const#USER",
+      "sk":"const#TEST",
       "form":{"username":"insert2@user.com",
               "displayname":"J",
               "password":"a1A!aaaa"
             }
-      }'::JSON)::JSONB ->> 'msg',
+      }'::JSONB)::JSONB ->> 'msg',
       'OK'::TEXT,
       'insert pk sk form good 0_0_1'::TEXT
   );
   -- 3
   SELECT is (
-    one_version_0_0_1.insert('{
-      "sk":"const#USER",
+    base_0_0_1.insert('{
+      "sk":"const#TEST",
+      "tk":"username#insert22@user.com",
+      "form":{"username":"insert22@user.com",
+              "displayname":"J",
+              "password":"a1A!aaaa"
+            }
+      }'::JSONB)::JSONB ->> 'msg',
+      'OK'::TEXT,
+      'insert pk sk form good 0_0_1'::TEXT
+  );
+  -- 4
+  SELECT is (
+    base_0_0_1.insert('{
+      "sk":"const#TEST",
       "tk":"guid#a920a5bd9-e669-41d4-b917-81212bc184a3",
       "form":{"username":"insert3@user.com",
               "displayname":"J",
               "password":"a1A!aaaa"
             }
-      }'::JSON)::JSONB ->> 'msg',
+      }'::JSONB)::JSONB ->> 'msg',
       'OK'::TEXT,
       'insert sk tk form good  0_0_1'::TEXT
   );
-  -- 4
-  SELECT is (
-    one_version_0_0_1.insert('{
-      "pk":"username#insert4@user.com",
-      "sk":"const#USER",
-      "tk":"guid#b920a5bd9-e669-41d4-b917-81212bc184a3",
-      "form":{"username":"insert@user.com",
-              "displayname":"J",
-              "password":"a1A!aaaa"
-            }
-      }'::JSON)::JSONB ->> 'msg',
-      'OK'::TEXT,
-      'insert pk sk tk form good  0_0_1'::TEXT
-  );
   -- 5
   SELECT is (
-    one_version_0_0_1.insert('{
+    base_0_0_1.insert('{
       "pk":"username#insert4@user.com",
-      "sk":"const#USER",
+      "sk":"const#TEST",
       "tk":"guid#b920a5bd9-e669-41d4-b917-81212bc184a3",
       "form":{"username":"insert4@user.com",
               "displayname":"J",
               "password":"a1A!aaaa"
             }
-      }'::JSON)::JSONB ->> 'msg',
-      'Duplicate'::TEXT,
-      'insert sk tk form, sk tk duplicte error  0_0_1'::TEXT
+      }'::JSONB)::JSONB ->> 'msg',
+      'OK'::TEXT,
+      'insert pk sk tk form good  0_0_1'::TEXT
   );
   -- 6
   SELECT is (
-    one_version_0_0_1.insert('{
+    base_0_0_1.insert('{
+      "pk":"username#insert4@user.com",
+      "sk":"const#TEST",
+      "tk":"guid#b920a5bd9-e669-41d4-b917-81212bc184a3",
+      "form":{"username":"insert4@user.com",
+              "displayname":"J",
+              "password":"a1A!aaaa"
+            }
+      }'::JSONB)::JSONB ->> 'msg',
+      'Duplicate'::TEXT,
+      'insert sk tk form, sk tk duplicte error  0_0_1'::TEXT
+  );
+  -- 7
+  SELECT is (
+    base_0_0_1.insert('{
       "form":{"username":"insert@user.com",
               "displayname":"J",
               "password":"a1A!aaaa"
             }
-      }'::JSON)::JSONB ->> 'msg',
+      }'::JSONB)::JSONB ->> 'msg',
       'Bad Request'::TEXT,
       'insert missing keys form good  0_0_1'::TEXT
   );
-  -- 7
+  -- 8
   SELECT is (
-    one_version_0_0_1.insert('{
+    base_0_0_1.insert('{
       "pk":"username#insert4@user.com",
-      "sk":"const#USER",
+      "sk":"const#TEST",
       "tk":"guid#b920a5bd9-e669-41d4-b917-81212bc184a3",
       "badform":{"username":"insert@user.com",
               "displayname":"J",
               "password":"a1A!aaaa"
             }
-      }'::JSON)::JSONB ->> 'msg',
+      }'::JSONB)::JSONB ->> 'msg',
       'Bad Request'::TEXT,
       'insert pk sk tk BADform   0_0_1'::TEXT
   );
@@ -589,6 +522,190 @@ BEGIN;
   SELECT * FROM finish();
 
 ROLLBACK;
+
+
+/*
+
+GOOD
+pk   sk
+pk   sk=*
+     sk   tk
+     sk   tk=*
+     xk   yk
+     xk=* yk
+BAD
+pk=""
+pk=*
+sk=""
+sk=*
+tk=""
+tk=*
+
+pk=""
+pk="" sk=""
+pk="*" sk="*"
+      sk="" tk=""
+      xk="" yk=""
+*/
+BEGIN;
+
+  SELECT plan(14);
+  -- 1 pk
+
+  SELECT is (
+    base_0_0_1.query('{"pk":"*"}'::JSON),
+    '{"msg": "Bad Request", "status": "400"}'::JSONB,
+    'query pk=* 400 0_0_1'::TEXT
+  );
+  SELECT is (
+    base_0_0_1.query('{"sk":"*"}'::JSON),
+    '{"msg": "Bad Request", "status": "400"}'::JSONB,
+    'query sk=* 400 0_0_1'::TEXT
+  );
+  SELECT is (
+    base_0_0_1.query('{"tk":"*"}'::JSON),
+    '{"msg": "Bad Request", "status": "400"}'::JSONB,
+    'query tk=* 400 0_0_1'::TEXT
+  );
+
+  SELECT is (
+    base_0_0_1.query('{"pk":""}'::JSON),
+    '{"msg": "Bad Request", "status": "400"}'::JSONB,
+    'query pk="" 400 0_0_1'::TEXT
+  );
+  SELECT is (
+    base_0_0_1.query('{"sk":""}'::JSON),
+    '{"msg": "Bad Request", "status": "400"}'::JSONB,
+    'query sk="" 400 0_0_1'::TEXT
+  );
+  SELECT is (
+    base_0_0_1.query('{"tk":""}'::JSON),
+    '{"msg": "Bad Request", "status": "400"}'::JSONB,
+    'query tk="" 400 0_0_1'::TEXT
+  );
+  SELECT is (
+    base_0_0_1.query('{"pk":"","sk":"*"}'::JSON),
+    '{"msg": "Bad Request", "status": "400"}'::JSONB,
+    'query pk="" sk="" 400 0_0_1'::TEXT
+  );
+  SELECT is (
+    base_0_0_1.query('{"sk":"","tk":""}'::JSON),
+    '{"msg": "Bad Request", "status": "400"}'::JSONB,
+    'query sk="" tk="" 400 0_0_1'::TEXT
+  );
+  -- 2 pk sk
+
+  SELECT ok (
+    base_0_0_1.query('{"pk":"username#existing@user.com", "sk":"const#USER"}'::JSON) ->> 'msg' = 'OK',
+    'query pk sk good 0_0_1'::TEXT
+  );
+
+  -- 3 pk sk=*
+
+  SELECT ok (
+    base_0_0_1.query('{"pk":"username#existing@user.com", "sk":"*"}'::JSON)::JSONB ->> 'msg' = 'OK',
+    'query pk sk:* good 0_0_1'::TEXT
+  );
+
+  -- 4 sk tk
+
+  SELECT ok (
+    base_0_0_1.query('{
+      "sk":"const#USER",
+      "tk": "guid#420a5bd9-e669-41d4-b917-81212bc184a3"}'::JSON)::JSONB ? 'selection',
+    'query sk tk has selection is OK 0_0_1'::TEXT
+  );
+
+  -- 5 sk tk=*
+
+  SELECT ok (
+    base_0_0_1.query('{"sk":"const#USER", "tk": "*"}'::JSON)::JSONB ->> 'msg' = 'OK',
+    'query sk "tk":* good 0_0_1'::TEXT
+  );
+
+  -- 6 xk yk
+
+  SELECT ok (
+    base_0_0_1.query('{"xk":"const#FLIP", "yk": "guid#920a5bd9-e669-41d4-b917-81212bc184a3"}'::JSON)::JSONB ->> 'msg' = 'OK',
+    'query xk yk good 0_0_1'::TEXT
+  );
+
+  -- 7 xk yk=*
+
+  SELECT ok (
+    base_0_0_1.query('{"xk":"const#FLIP", "yk": "*"}'::JSON)::JSONB ->> 'msg' = 'OK',
+    'query xk yk=* good 0_0_1'::TEXT
+  );
+
+
+  SELECT * FROM finish();
+
+ROLLBACK;
+
+
+-- DELETE
+BEGIN;
+
+  SELECT plan(5);
+
+  -- {pk:"username#delete@user.com",sk:"const#USER"}
+  -- {pk:"usename#nonexisting@user.com",sk:"const#USER"}
+  -- Delete returns the deleted item
+  -- Delete only acceptes Primary Key combination i.e., pk and sk
+
+  -- 1
+  SELECT is (
+    base_0_0_1.delete('{
+      "xk":"guid#720a5bd9-e669-41d4-b917-81212bc184a3",
+      "yk":"const#USER"}'::JSON)::JSONB ->> 'msg',
+      'Bad Request'::TEXT,
+      'delete pk sk form, Bad Request 0_0_1'::TEXT
+  );
+  -- 2
+  SELECT is (
+    base_0_0_1.delete('{
+      "pk":"username#unknown@user.com",
+      "sk":"const#USER"
+      }'::JSON)::JSONB ->> 'msg',
+      'Not Found'::TEXT,
+      'delete pk sk form,  Not Found 0_0_1'::TEXT
+  );
+  -- 3
+  SELECT ok (
+    base_0_0_1.delete('{
+      "pk": "username#delete1@user.com",
+      "sk":"const#USER"
+      }'::JSON)::JSONB ? 'deletion',
+    'delete pk sk good 0_0_1'::TEXT
+  );
+  -- 4
+  SELECT is (
+    base_0_0_1.delete('{
+      "pk":"username#delete2@user.com",
+      "sk":"const#USER"
+      }'::JSON)::JSONB ->> 'msg',
+      'OK'::TEXT,
+      'delete pk sk form, Ok 0_0_1'::TEXT
+  );
+
+
+  -- 5
+  SELECT is (
+    base_0_0_1.delete('{
+      "sk":"const#USER",
+      "tk":"username#delete3@user.com"
+      }'::JSON)::JSONB ->> 'msg',
+      'OK'::TEXT,
+      'delete sk tk form, Ok 0_0_1'::TEXT
+  );
+
+
+
+  SELECT * FROM finish();
+
+ROLLBACK;
+
+
   --=======================================
   -- UPDATE
   --=======================================
@@ -598,7 +715,7 @@ BEGIN;
   SELECT plan(4);
   --  1
   SELECT is (
-    one_version_0_0_1.update('{
+    base_0_0_1.update('{
       "form":{"username":"update@user.com",
               "displayname":"J",
               "password":"a1A!aaaa"
@@ -609,7 +726,7 @@ BEGIN;
   );
   -- 2
   SELECT is (
-    one_version_0_0_1.update('{
+    base_0_0_1.update('{
       "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
       "form":{"username":"update@user.com",
               "displayname":"J",
@@ -621,7 +738,7 @@ BEGIN;
   );
   -- 3
   SELECT is (
-    one_version_0_0_1.update('{
+    base_0_0_1.update('{
       "sk":"const#USER",
       "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
       "form":{"username":"update@user.com",
@@ -634,7 +751,7 @@ BEGIN;
   );
   -- 4
   SELECT is (
-    one_version_0_0_1.update('{
+    base_0_0_1.update('{
       "pk":"username#update@user.com",
       "sk":"const#USER",
       "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3"
@@ -644,7 +761,7 @@ BEGIN;
   );
   -- 5
   SELECT is (
-    one_version_0_0_1.update('{
+    base_0_0_1.update('{
       "pk":"username#unknown@user.com",
       "sk":"const#USER",
       "tk":"guid#unknown820a5bd9-e669-41d4-b917-81212bc184a3",
@@ -658,7 +775,7 @@ BEGIN;
   );
   -- 6
   SELECT is (
-    one_version_0_0_1.update('{
+    base_0_0_1.update('{
       "pk":"username#unknown@user.com",
       "sk":"const#USER",
       "tk":"guid#unknown820a5bd9-e669-41d4-b917-81212bc184a3",
@@ -691,7 +808,7 @@ BEGIN;
 
   -- Not Found with a change
   SELECT is (
-    one_version_0_0_1.update('{
+    base_0_0_1.update('{
       "pk":"username#unknown@user.com",
       "sk":"const#USER",
       "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
@@ -709,7 +826,7 @@ BEGIN;
   -- No change
 
   SELECT is (
-    one_version_0_0_1.update('{
+    base_0_0_1.update('{
       "pk":"username#update@user.com",
       "sk":"const#USER",
       "tk":"guid#820a5bd9-e669-41d4-b917-81212bc184a3",
@@ -725,7 +842,7 @@ BEGIN;
   );
   -- Form change OK
  SELECT is (
-   one_version_0_0_1.update(
+   base_0_0_1.update(
        '{
          "pk":"username#update@user.com",
          "sk":"const#USER",
@@ -744,7 +861,7 @@ BEGIN;
 
  --   Single Key Change only
  SELECT is (
-   one_version_0_0_1.update(
+   base_0_0_1.update(
      '{
        "pk":"username#update@user.com",
        "sk":"const#USER",
@@ -762,7 +879,7 @@ BEGIN;
  );
  --   Multiple Key Change
  SELECT is (
-   one_version_0_0_1.update(
+   base_0_0_1.update(
      '{
        "pk":"username#update@user.com",
        "sk":"const#USER",
@@ -770,7 +887,7 @@ BEGIN;
        "form":{
                "username":"CHANGEupdate@user.com",
                "displayname":"J",
-               "const":"CHANGEUSER",
+               "const":"CHANGETEST",
                "guid":"820a5bd9-e669-41d4-b917-81212bc184a3"
              }
       }'::JSON
@@ -789,34 +906,34 @@ ROLLBACK;
 BEGIN;
 
   SELECT plan(8);
-
-
+  -- 1
   SELECT has_function(
-      'one_version_0_0_1',
+      'api_0_0_1',
       'signin',
       ARRAY[ 'TEXT', 'JSON' ],
       'Function signin (text, json) should exist'
   );
-
+  -- 2
   SELECT is (
-    one_version_0_0_1.signin(
+    api_0_0_1.signin(
       NULL::TEXT,
       NULL::JSON
     )::JSONB ->> 'msg',
     'Forbidden'::TEXT,
     'signin NO token, NO credentials, Forbidden 0_0_1'::TEXT
   );
+    -- 3
   SELECT is (
-    one_version_0_0_1.signin(
+    api_0_0_1.signin(
       'bad.token.jjj'::TEXT,
       NULL::JSON
     )::JSONB ->> 'msg',
     'Forbidden'::TEXT,
     'signin token BAD, NO credentials, Forbidden 0_0_1'::TEXT
   );
-
+  -- 4
   SELECT is (
-    one_version_0_0_1.signin(
+    api_0_0_1.signin(
       NULL::TEXT,
       '{"username":"existing@user.com",
         "password":"a1A!aaaa"
@@ -824,9 +941,9 @@ BEGIN;
     'Forbidden'::TEXT,
     'signin NO token, GOOD credentials,  Forbidden 0_0_1'::TEXT
   );
-
+  -- 5
   SELECT is (
-    one_version_0_0_1.signin(
+    api_0_0_1.signin(
       public.sign(
         current_setting('app.lb_jwt_claims')::JSON, current_setting('app.settings.jwt_secret'))::TEXT,
       '{"username":"unknown@user.com","password":"a1A!aaaa"}'::JSON
@@ -834,9 +951,9 @@ BEGIN;
     'Not Found'::TEXT,
     'signin GOOD token Bad Username Credentials 0_0_1'::TEXT
   );
-
+  -- 6
   SELECT is (
-    one_version_0_0_1.signin(
+    api_0_0_1.signin(
       public.sign(
         current_setting('app.lb_jwt_claims')::JSON, current_setting('app.settings.jwt_secret'))::TEXT,
       '{"username":"existing@user.com","password":"unknown"}'::JSON
@@ -844,9 +961,9 @@ BEGIN;
     'Not Found'::TEXT,
     'signin GOOD token BAD Password Credentials 0_0_1'::TEXT
   );
-
+  -- 7
   SELECT is (
-    one_version_0_0_1.signin(
+    api_0_0_1.signin(
       public.sign(
         current_setting('app.lb_jwt_claims')::JSON, current_setting('app.settings.jwt_secret'))::TEXT,
       '{"username":"existing@user.com","password":"a1A!aaaa"}'::JSON
@@ -854,9 +971,9 @@ BEGIN;
     'OK'::TEXT,
     'signin GOOD token GOOD Credentials 0_0_1'::TEXT
   );
-
+  -- 8
   SELECT is (
-    one_version_0_0_1.signin(
+    api_0_0_1.signin(
       public.sign(
         current_setting('app.lb_jwt_claims')::JSON, current_setting('app.settings.jwt_secret'))::TEXT,
       '{"username":"existing@user.com","password":"a1A!aaaa"}'::JSON
@@ -864,6 +981,7 @@ BEGIN;
     true::Boolean,
     'signin GOOD token GOOD Credentials Returns TOKEN 0_0_1'::TEXT
   );
+  -- 9
 
   -- TOKEN TESTS
 
@@ -872,6 +990,125 @@ BEGIN;
 
 ROLLBACK;
 
+-- user_ins
+-- user_upd
+-- user_sel
+-- user_del
+
+
+-------------------
+-- User_ins
+------------------
+BEGIN;
+
+  SELECT plan(4);
+  -- 1
+  SELECT has_function(
+      'api_0_0_1',
+      'user_ins',
+      ARRAY[ 'TEXT', 'JSON' ],
+      'Function user_ins (text, json) should exist'
+  );
+  -- 2
+  SELECT is (
+    api_0_0_1.user_ins(
+      NULL::TEXT,
+      NULL::JSON
+    )::JSONB ->> 'status' = '403',
+    true::Boolean,
+    'user_ins(NULL,NULL) 403 0_0_1'::TEXT
+  );
+  -- 3
+
+  SELECT is (
+    api_0_0_1.user_ins(
+      'xxx'::TEXT,
+      NULL::JSON
+    )::JSONB ->> 'status' = '403',
+    true::Boolean,
+    'user_ins(bad_token,NULL) 403 0_0_1'::TEXT
+  );
+  -- 4
+  SELECT is (
+    api_0_0_1.user_ins(
+      public.sign(
+        current_setting('app.lb_jwt_claims')::JSON,
+        current_setting('app.settings.jwt_secret')
+      )::TEXT,
+      NULL::JSON
+    )::JSONB ->> 'status' = '400',
+    true::Boolean,
+    'user_ins(token,NULL) 400 0_0_1'::TEXT
+  );
+  -- 5
+  SELECT is (
+    api_0_0_1.user_ins(
+      public.sign(
+        current_setting('app.lb_jwt_claims')::JSON,
+        current_setting('app.settings.jwt_secret')
+      )::TEXT,
+      '{}'::JSON
+    )::JSONB ->> 'status' = '400',
+    true::Boolean,
+    'user_ins(token,{}) 400 0_0_1'::TEXT
+  );
+  -- 6
+  SELECT is (
+    api_0_0_1.user_ins(
+      public.sign(
+        current_setting('app.lb_jwt_claims')::JSON,
+        current_setting('app.settings.jwt_secret')
+      )::TEXT,
+      '{"pk":""}'::JSON
+    )::JSONB ->> 'status' = '400',
+    true::Boolean,
+    'user_ins(token,{pk:""}) 400 0_0_1'::TEXT
+  );
+  -- 7
+  SELECT is (
+    api_0_0_1.user_ins(
+      public.sign(
+        current_setting('app.lb_jwt_claims')::JSON,
+        current_setting('app.settings.jwt_secret')
+      )::TEXT,
+      '{"pk":"","sk":""}'::JSON
+    )::JSONB ->> 'status' = '400',
+    true::Boolean,
+    'user_ins(token,{pk:"",sk:""}) 400 0_0_1'::TEXT
+  );
+  -- 8
+  SELECT is (
+    api_0_0_1.user_ins(
+      public.sign(
+        current_setting('app.lb_jwt_claims')::JSON,
+        current_setting('app.settings.jwt_secret')
+      )::TEXT,
+      '{"pk":"username#goodinsert@user.com","sk":"const#USER","form":{}}'::JSON
+    )::JSONB ->> 'status' = '200',
+    true::Boolean,
+    'user_ins(token,{pk:"username#goodinsert@user.com",sk:"const#USER", form:{}}) 200 0_0_1'::TEXT
+  );
+
+  SELECT * FROM finish();
+
+ROLLBACK;
+-------------------
+-- User_ins
+------------------
+BEGIN;
+
+  SELECT plan(4);
+  -- 1
+  SELECT has_function(
+      'api_0_0_1',
+      'user_upd',
+      ARRAY[ 'TEXT', 'JSON', 'JSON' ],
+      'Function user_upd (text, json, json) should exist'
+  );
+
+  SELECT * FROM finish();
+
+ROLLBACK;
 /*
 -------------------
 -- Adopter TESTs
@@ -885,7 +1122,7 @@ BEGIN;
   -- TEST: Test(a) adopter Insert
 
   SELECT ok (
-    one_version_0_0_1.adopter('{
+    api_0_0_1.adopter('{
       "name":  "me@someplace.com",
       "displayname", "J",
       "password": "a1A!aaaa"
@@ -894,8 +1131,8 @@ BEGIN;
   );
 
   -- duplicate adopter
--- PREPARE duplicate_adopter AS one_version_0_0_1.adopter('{"name":  "me@someplace.com", "password": "a1A!aaaa"}'::JSON);
-PREPARE new_adopter as select one_version_0_0_1.adopter('{"name":  "me@someplace.com", "password": "a1A!aaaa"}'::JSON);
+-- PREPARE duplicate_adopter AS api_0_0_1.adopter('{"name":  "me@someplace.com", "password": "a1A!aaaa"}'::JSON);
+PREPARE new_adopter as select api_0_0_1.adopter('{"name":  "me@someplace.com", "password": "a1A!aaaa"}'::JSON);
 
 SELECT throws_ok(
     'new_adopter',
@@ -929,7 +1166,7 @@ BEGIN;
 --| signin sucess | <guest> | 'event#<guid>' | 'signin' | <signin-form> |
 
 SELECT ok (
-  one_version_0_0_1.signin('{
+  api_0_0_1.signin('{
     "name":  "existing@user.com",
     "password": "a1A!aaaa"
     }'::JSON
@@ -958,7 +1195,7 @@ BEGIN;
 --| adoptee success | <request.jwt.claim.jti> | 'adoptee#<dr-asset-id>' | 'adoptee' | <adoptee-form> |
 -- INSERT
 SELECT is (
-  one_version_0_0_1.adoptee( '{
+  api_0_0_1.adoptee( '{
     "name":"some opt name",
     "drain_id":"GR_40089457",
     "lat":42.96265175640001,
@@ -970,7 +1207,7 @@ SELECT is (
 );
 -- '{"name":"some opt name", "drain_id":"GR_40089457","lat":42.96265175640001,"lon":-85.6676956307}'
 -- DUPLICATE
-PREPARE new_adoptee AS select one_version_0_0_1.adoptee( '{
+PREPARE new_adoptee AS select api_0_0_1.adoptee( '{
   "name":"some opt name",
   "drain_id":"GR_40089457",
   "lat":42.96265175640001,
@@ -985,7 +1222,7 @@ SELECT throws_ok(
 -- UPDATE
 -- testing key "adopter_key":"8a39dc33-0c6c-4b4e-bdb8-3829af311dd8"
 SELECT is (
-  one_version_0_0_1.adoptee( '{
+  api_0_0_1.adoptee( '{
     "id":"GR_40089457",
     "name":"abc-asd",
     "drain_id":"GR_40089457",
@@ -999,7 +1236,7 @@ SELECT is (
 );
 -- DELETE
 SELECT is (
-  one_version_0_0_1.adoptee( '{
+  api_0_0_1.adoptee( '{
     "id":"-GR_40089457",
     "name":"some opt name",
     "drain_id":"GR_40089457",

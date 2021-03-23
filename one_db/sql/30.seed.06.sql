@@ -1,7 +1,7 @@
 -- hashed with password = PASSWORDmustBEATLEAST32CHARSLONGLONG
 
-insert into one_base.one
-  (pk, sk, tk, form)
+insert into base_0_0_1.one
+  (pk, sk, tk, form, owner)
   values (
   'username#selectchange@user.com',
   'const#USER',
@@ -10,30 +10,36 @@ insert into one_base.one
                 "displayname": "J",
                 "scope":"editor",
                 "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
-    }'::JSONB
+    }'::JSONB,
+    'selectchange@user.com'
   );
-  insert into one_base.one
-    (pk, sk, tk, form)
-    values (
-    'username#selectchange@user.com',
-    'const#PASSWORD',
-    'guid#420a5bd9-e669-41d4-b917-81212bc184a3',
-    '{
-        "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
-      }'::JSONB
-    );
-insert into one_base.one
-  (pk, sk, tk, form)
+
+insert into base_0_0_1.one
+  (pk, sk, tk, form, owner)
+  values (
+  'username#selectchange@user.com',
+  'const#PASSWORD',
+  'guid#420a5bd9-e669-41d4-b917-81212bc184a3',
+  '{
+      "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
+    }'::JSONB,
+    'selectchange@user.com'
+  );
+
+insert into base_0_0_1.one
+  (pk, sk, tk, form, owner)
   values (
   'username#selectchange@user.com',
   'const#NAME',
   'guid#420a5bd9-e669-41d4-b917-81212bc184a3',
   '{ "username": "selectchange@user.com",
                 "displayname": "J"
-    }'::JSONB
+    }'::JSONB,
+    'selectchange@user.com'
   );
-insert into one_base.one
-  (pk, sk, tk, form)
+
+insert into base_0_0_1.one
+  (pk, sk, tk, form, owner)
   values (
       'username#existing@user.com',
       'const#USER',
@@ -42,11 +48,12 @@ insert into one_base.one
               "displayname":"J",
               "scope":"editor",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
-       }'::JSONB
+       }'::JSONB,
+       'existing@user.com'
     );
 
-insert into one_base.one
-  (pk, sk, tk, form)
+insert into base_0_0_1.one
+  (pk, sk, tk, form, owner)
   values (
       'username#existing2@user.com',
       'const#USER',
@@ -55,23 +62,53 @@ insert into one_base.one
               "displayname":"J",
               "scope":"editor",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
-      }'::JSONB
+      }'::JSONB,
+      'existing2@user.com'
   );
 
-insert into one_base.one
-  (pk, sk, tk, form)
+insert into base_0_0_1.one
+  (pk, sk, tk, form, owner)
   values (
-      'username#delete@user.com',
+      'username#delete1@user.com',
       'const#USER',
       'guid#720a5bd9-e669-41d4-b917-81212bc184a3',
-      '{"username":"delete@user.com",
+      '{"username":"delete1@user.com",
               "displayname":"J",
               "scope":"editor",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
-       }'::JSONB
+       }'::JSONB,
+       'delete1@user.com'
   );
-insert into one_base.one
-  (pk, sk, tk, form, created)
+
+insert into base_0_0_1.one
+  (pk, sk, tk, form, owner)
+  values (
+      'username#delete2@user.com',
+      'const#USER',
+      'guid#2720a5bd9-e669-41d4-b917-81212bc184a3',
+      '{"username":"delete2@user.com",
+              "displayname":"J",
+              "scope":"editor",
+              "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
+       }'::JSONB,
+       'delete2@user.com'
+  );
+
+  insert into base_0_0_1.one
+    (sk, tk, form, owner)
+    values (
+        'const#USER',
+        'username#delete3@user.com',
+        '{"username":"delete3@user.com",
+                "displayname":"J",
+                "scope":"editor",
+                "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
+         }'::JSONB,
+         'delete3@user.com'
+    );
+
+insert into base_0_0_1.one
+  (pk, sk, tk, form, created, owner)
   values (
       'username#update@user.com',
       'const#USER',
@@ -81,10 +118,12 @@ insert into one_base.one
               "scope":"editor",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
        }'::JSONB,
-      '2021-02-21 20:44:47.442374'
+      '2021-02-21 20:44:47.442374',
+      'update@user.com'
   );
-insert into one_base.one
-  (pk, sk, tk, form, created)
+
+insert into base_0_0_1.one
+  (pk, sk, tk, form, created, owner)
   values (
       'username#flip@user.com',
       'guid#920a5bd9-e669-41d4-b917-81212bc184a3',
@@ -94,5 +133,6 @@ insert into one_base.one
               "scope":"editor",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
        }'::JSONB,
-      '2021-02-21 20:44:47.442374'
+      '2021-02-21 20:44:47.442374',
+      'flip@user.com'
   );

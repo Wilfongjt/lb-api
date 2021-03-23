@@ -1,13 +1,21 @@
 module.exports = {
   method: 'GET',
   path: '/',
-
-  /*handler: function (req, h) {
-    // let client = new DbClient().connect();
-    // let insertResponse = client.insert(new ChelateUser(req.payload));
-
-    return '/';
-  },*/
+  handler: async function (req,h) {
+    let result = {status:"200", msg:"OK"};
+    return result;
+  },
+  options: {
+    auth: false,
+    description: 'API Root',
+    notes: 'Returns ',
+    tags: ['api']
+  }
+};
+/*
+module.exports = {
+  method: 'GET',
+  path: '/',
   options: {
       description: 'API Root',
       notes: 'Returns ',
@@ -19,3 +27,4 @@ module.exports = {
       auth: false
   }
 }
+*/

@@ -17,7 +17,7 @@
     "run": "babel-node server.js",
     "build": "babel . -d ./dist --ignore=\"node_modules\"",
     "test": "jest --coverage",
-    "test2": "jest --coverage -detectOpenHandles"
+    "test2": "jest --coverage --runInBand --detectOpenHandles"
   },
   "author": "James Wilfong <wilfongjt@gmail.com>",
   "license": "MIT",
@@ -36,6 +36,7 @@
     "@hapi/jwt": "^2.0.1",
     "@hapi/vision": "^6.0.1",
     "dotenv": "^8.2.0",
+    "hapi-postgres-connection": "^7.0.0",
     "hapi-swagger": "^14.1.0",
     "joi": "^17.3.0",
     "json-query": "^2.2.2",
