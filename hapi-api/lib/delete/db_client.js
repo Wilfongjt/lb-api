@@ -1,7 +1,9 @@
+deprecated
+
 import jsonQuery from 'json-query';
 import Jwt from '@hapi/jwt';
 
-import DbClientConfig from './db_client_config.js';
+//import DbClientConfig from './db _client_config.js';
 
 import Chelate from '../chelates/chelate.js'
 import { ChelatePattern } from '../chelates/chelate_pattern.js'
@@ -18,46 +20,47 @@ import { CriteriaPK } from '../clients/criteria.js';
 // insert {pk:null, sk, data:null, form, ...}
 //
 //
-export default class DbClientJSON {
-
-  constructor (config) {
-
+export default class DbClient {
+  // always starts with an empty table
+  // connect clears the table
+  constructor () {
+    //console.log('db client ');
+    /*
     this.table = {
       "table": []
     };
     this.config = new DbClientConfig();
-    //this.config = config;
+    */
   }
 
-  async connect() {
+  connect() {
+    throw new Error('Child class of DBClient is missing a connect() method.');
     //console.log('connect', this.config);
+    /*
     if (!this.config.path){
       throw new Error('Missing path value');
     }
     if (this.table !== null) {
       // load json default data
       this.table = JSON.parse(JSON.stringify(require(this.config.path)));
-      /*this.table = {
-        "table": []
-      };
-      */
+
     }
+    */
     return this;
   }
 
-  end () {
-    return this;
+  disconnect() {
+    throw new Error('Child class of DBClient is missing a disconnect() method.');
+
   }
 
-  release() {
-    // empty stub
-    return this;
-  }
-  //select(select_criteria) { //
 
-  async query(select_criteria) { //
+  select(select_criteria) { //
     // {pk:"*", sk:"*"}
     // {sk:"*", tk:"*"}
+    throw new Error('Child class of DBClient is missing a select(select_criteria) method.');
+
+    /*
     let result = [];
     let error;
     if (typeof(select_criteria)==='string') {
@@ -94,18 +97,20 @@ export default class DbClientJSON {
     if (error) {
       selection.error = error;
     }
+    */
 
     return selection;
   }
 
-  async insert(chelate) {
-
+  insert(chelate) {
+    throw new Error('Child class of DBClient is missing a insert(chelate) method.');
+    /*
     if (!this.table) {
       throw new Error('Not connected to data');
     }
     let chelate_copy = JSON.parse(JSON.stringify(chelate));
 
-    let finding = await this.query(new CriteriaPK(chelate_copy));
+    let finding = this.select(new CriteriaPK(chelate_copy));
 
     if (finding.selection.length > 0) { // duplicate
       return {insertion: false, error: 'Duplicate not allowed!'};
@@ -114,11 +119,16 @@ export default class DbClientJSON {
     this.table.table.push(chelate_copy);
 
     // insertResponse
-    return {insertion: chelate_copy};
+    */
+    //return {insertion: chelate_copy};
+
   }
 
 
-  async delete(criteria) {
+  delete(criteria) {
+    throw new Error('Child class of DBClient is missing a delete(criteria) method.');
+
+    /*
     let result=[];
     let error;
 
@@ -153,23 +163,26 @@ export default class DbClientJSON {
     if (error) {
       deletion.error = error;
     }
-
-    return deletion;
+    */
+    //return deletion;
   }
 
-  async update(update_chelate) {
+  update(update_chelate) {
+    throw new Error('Child class of DBClient is missing a update(update_chelate) method.');
+
     // update current record
     // strategy:  find record,
     //            resolve differences,
     //            delete record,
     //            insert resolved record
     // return record before updated
+    /*
     let chelateHelper = new ChelateHelper();
     let result = [];
     let criteria = JSON.parse(JSON.stringify(new CriteriaBest(update_chelate))); // use to find record and as part of return
-    let queryResult = await this.query(criteria); // find diff
+    let selectionResult = this.select(criteria); // find diff
 
-    let cur_chelate = queryResult.selection[0];
+    let cur_chelate = selectionResult.selection[0];
     let result_value = JSON.parse(JSON.stringify(cur_chelate)) ;
     if (result_value.form.password) {
       delete result_value.form.password;
@@ -177,40 +190,46 @@ export default class DbClientJSON {
     result.push(result_value); // prepare return
     // resolve differences
     let resolved_chelate = chelateHelper.resolve(cur_chelate, update_chelate);
-    await this.delete(criteria); // delete existing record
-    await this.insert(resolved_chelate); // insert the resolve record
+    this.delete(criteria); // delete existing record
+    this.insert(resolved_chelate); // insert the resolve record
 
     // format return
     let updates = {criteria: criteria, updates: result};
     //if (error) {
     //  updates.error = error;
     //}
-    return updates;
+    */
+    //return updates;
   }
 
 
   ////////////
   // SignUp
   ///////////
-  async signup(credentials) {
+  signup(credentials) {
+    throw new Error('Child class of DBClient is missing a signup(credentials) method.');
 
-    let insertResponse = await this.insert(new ChelateUser(credentials));
+    /*
+    let insertResponse = this.insert(new ChelateUser(credentials));
 
     return insertResponse;
+    */
   }
   /////////////
   // SignIn
   /////////////
-  async signin(credentials) {
+  signin(credentials) {
+    throw new Error('Child class of DBClient is missing a signin(credentials) method.');
+    /*
     // credentials is dont contain value prefix, eg a@a.com instead of username:a@a.com
     let criteria = {pk: `username#${credentials.username}`, sk: 'const#USER'}; // config search for user
-    let selection = await this.query(criteria); // get users recorded account
+    let selection = this.select(criteria); // get users recorded account
     //console.log('selection', selection);
     let authentication = false; // assume attempt will fail
 
     if (selection.selection.length > 0) {
       let selection_password = selection.selection[0].form.password; // users recorded password
-      let secret = process.env.API_JWT_SECRET;
+      let secret = process.env.LB _JWT_SECRET;
       let guest_payload = new TokenPayload()
                           .payload();
 
@@ -222,6 +241,7 @@ export default class DbClientJSON {
     delete credentials['password'];
 
     return {credentials: credentials, authentication: authentication};
+    */
   }
 
 }
