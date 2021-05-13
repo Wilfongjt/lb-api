@@ -1,33 +1,51 @@
 import Joi from 'joi';
-//import DbClientRouter from '../clients/db_client_router.js';
-//import DbFactory from '../clients/postgres/db_factory.js'; //A
 
 module.exports = {
+  // [Route:]
+  // [Description:]
+  // [Header: token]
+  // [Header: rollback , default is false]
   method: 'POST',
   path: '/signin',
   handler: async function (req, h) {
+    // [Define a /signin POST route handler]
     let result = {status:"200", msg:"OK"};
     let client ;
     let token ; // guest token
-    // verify token ??
+    let form ;
+
     try {
+      // [Get the API Token from request]
       token = req.headers.authorization; // guest token
+      // [Get a database client from request]
       client = req.pg;
-      // payload is criteria
+      form = req.payload;
+      // [Get credentials from request]
       let res = await client.query(
         {
-          text: 'select * from one_version_0_0_1.signin($1,$2)',
-          values: [token, JSON.stringify(req.payload)]
+          text: 'select * from api_0_0_1.signin($1::TEXT,$2::JSON)',
+          values: [token.replace('Bearer ',''),
+                   form]
         }
       );
+
       result = res.rows[0].signin;
+
+      /*
+      if (result.status !== '200') {
+        result['payload'] = req.payload;
+        result['payload'].password = '********';
+      }*/
     } catch (err) {
+      // [Catch any exceptions]
       result.status = '500';
       result.msg = 'Unknown Error'
       result['error'] = err;
-      //console.log('time err', err)
+      console.error('/signin err',err);
     } finally {
       client.release();
+
+      // [Return {status, msg, token}]
       return result;
     }
   },
@@ -39,7 +57,7 @@ module.exports = {
           mode: 'required',
           strategy: 'lb_jwt_strategy',
           access: {
-            scope: ['guest']
+            scope: ['api_guest']
           }
         },
         validate: {

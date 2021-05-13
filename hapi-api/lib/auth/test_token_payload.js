@@ -44,6 +44,36 @@ export default class TestTokenPayload {
                  .remove('scope')
                  .payload();
   }
+  user_TokenPayload(username, key, scope) {
+    if (!username){
+      throw 'user_TokenPayload is requires a username';
+    }
+    if (!key){
+      throw 'user_TokenPayload is requires a key';
+    }
+    if (!scope){
+      throw 'user_TokenPayload is requires a scope';
+    }
+    return new TokenPayload()
+                 .user(username)
+                 .key(key)
+                 .scope(scope)
+                 .payload();
+  }
+  admin_TokenPayload(username, key) {
+    if (!username){
+      throw 'admin_TokenPayload is requires a username';
+    }
+    if (!key){
+      throw 'admin_TokenPayload is requires a key';
+    }
+    return new TokenPayload()
+                 .user(username)
+                 .key(key)
+                 .scope('api_admin')
+                 .payload();
+  }
+  /*
   user_TokenPayload(username, id, scope) {
     return new TokenPayload()
                  .user(username)
@@ -51,4 +81,5 @@ export default class TestTokenPayload {
                  .scope(scope)
                  .payload();
   }
+  */
 };

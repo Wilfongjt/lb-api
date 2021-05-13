@@ -1,7 +1,5 @@
 import Joi from 'joi';
-//import DbClientRouter from '../clients/db_client_router.js';
-//import DbFactory from '../clients/postgres/db_factory.js'; // C
-//import { Pool } from 'pg';
+
 import { ChelateUser } from '../../../lib/chelates/chelate_user.js';
 /*
 Post Insert
@@ -10,37 +8,58 @@ Post Insert
 * payload must contain a {...,"form": {...}} key
 */
 module.exports = {
-  method: 'POST',
+  // [Route: /user POST]
+  // [Description:]
+  // [Header: token]
+  // [Header: rollback , default is false]
+  method: ['POST'],
   path: '/user',
   handler: async function (req, h) {
+    // [Define a /user POST route handler]
     let result = {status:"200", msg:"OK"};
     let client ;
     let token ; // guest token
-    let chelate ;
+    let form ;
+    let rollback = false;
     try {
+
+      // [Optionally rollback insert with headers.rollback=true]
+      rollback = req.headers.rollback || false;
+      // [Get the API Token from request]
+      // [Get the API Token from request]
       token = req.headers.authorization; // guest token
-      // expect a user data form with {username, displayname, password}
-      console.log('/user req.payload',req.payload);
-      chelate = new ChelateUser(req.payload);
-//console.log('/user post chelate ', chelate);
-//need insert chelates and query chelates
-      // verify token?? not sure how to do that in JOI, is done in DB
-      // verify minimum user using JOI below
+      // [Get a database client from request]
       client = req.pg;
+      // [Get pk from request]
+      form = req.payload;
+      // [Insert User into the database]
+      await client.query('BEGIN');
       let res = await client.query(
         {
-          text: 'select * from one_version_0_0_1.user_ins($1,$2)',
-          values: [token,JSON.stringify(chelate)]
+          text: 'select * from api_0_0_1.user($1::TEXT,$2::JSON)',
+          values: [token.replace('Bearer ',''),
+                   form]
         }
       );
       result = res.rows[0].user;
+      if (rollback) {
+        // rollback for testing
+        await client.query('ROLLBACK');
+      } else {
+        await client.query('COMMIT');
+      }
+
     } catch (err) {
+      // [Catch any exceptions and Rollback changes]
+      await client.query('ROLLBACK');
       result.status = '500';
       result.msg = 'Unknown Error'
       result['error'] = err;
-      console.log('/user err', err)
+      console.error('/user post err', err);
     } finally {
+      // [Release client back to pool]
       client.release();
+      // [Return status, msg, and insertion (copy of the inserted record)]
       return result;
     }
   },
@@ -52,7 +71,7 @@ module.exports = {
           mode: 'required',
           strategy: 'lb_jwt_strategy',
           access: {
-            scope: ['guest']
+            scope: ['api_guest']
           }
         },
         validate: {

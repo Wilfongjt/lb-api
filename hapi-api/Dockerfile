@@ -1,7 +1,7 @@
 FROM node:14.15.1
 
 # set target folder for app
-WORKDIR /usr/src/app
+WORKDIR /usr/src/api
 
 # ENV NODE_ENV production
 ENV NODE_ENV development
@@ -16,7 +16,6 @@ RUN npm install
 COPY . .
 
 EXPOSE 5555
-#EXPOSE ${LB_API_PORT}
 
 # allow browser connection to docker
 # ENV HOST 0.0.0.0

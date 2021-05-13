@@ -120,11 +120,11 @@ npm install @hapi/jwt
 # Environment variables (.env)
 ```
 # Use for Hapi (API)
-LB_API_PORT=5555
-LB_API_HOST=0.0.0.0
-LB_JWT_SECRET=PASSWORDmustBEATLEAST32CHARSLONGLONG
+API_PORT=5555
+API_HOST=0.0.0.0
+API_JWT_SECRET=PASSWORDmustBEATLEAST32CHARSLONGLONG
 ```
-* LB_API_HOST only works when set to 0.0.0.0
+* API_HOST only works when set to 0.0.0.0
 
 # JSON Query
 ```
@@ -146,3 +146,5 @@ LB_GUEST_PASSWORD=mysecretclientpassword
 LB_WODEN={"org":"CitizenLabs","app":"One-API","name":"woden@citizenlabs.org","password":"a1A!aaaa"}
 
 ```
+
+## Testing

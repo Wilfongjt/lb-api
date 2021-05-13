@@ -31,7 +31,7 @@ Manual process https://jwt.io
         iss:"",
         sub:false,
         user:"<guest-user>",
-        scope:["guest"] )
+        scope:"api_guest" )
       password(<POSTGRES_JWT_SECRET>))
       |
     (guest-token)

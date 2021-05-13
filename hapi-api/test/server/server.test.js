@@ -55,10 +55,10 @@ describe('Server Tests', () => {
 
 
 
-  it('Restricted /restricted responds with 200', async () => {
+  it('Restricted /restricted 200', async () => {
     // guest token required for restricted
     let token_payload = new TestTokenPayload().guest_TokenPayload();
-    let secret = process.env.LB_JWT_SECRET;
+    let secret = process.env.API_JWT_SECRET;
     let token = 'Bearer ' + Jwt.token.generate(token_payload, secret);
 
     const res = await server.inject({
@@ -78,7 +78,7 @@ describe('Server Tests', () => {
     // pass form payload in headers for GET
 
     let token_payload = new TestTokenPayload().guest_TokenPayload();
-    let secret = process.env.LB_JWT_SECRET;
+    let secret = process.env.API_JWT_SECRET;
     let token = 'Bearer ' + Jwt.token.generate(token_payload, secret);
 
       const res = await server.inject({
@@ -96,14 +96,18 @@ describe('Server Tests', () => {
 
   });
   // User
-  it('/user POST, responds with JSON', async () => {
+  /*
+  it('/user POST, 200 OK', async () => {
     // guest token required for user POST
 
     let payload = new TestTokenPayload().guest_TokenPayload();
-    let secret = process.env.LB_JWT_SECRET;
+    //let payload = new TestTokenPayload().user_TokenPayload('username@user.com', 'id-xxx', 'api_user');
+    //let payload = new TestTokenPayload().user_TokenPayload('username@user.com', 'api_user');
+    console.log('POST payload ', payload);
+    let secret = process.env.LB _JWT_SECRET;
     let token = 'Bearer ' + Jwt.token.generate(payload, secret);
-
-      const res = await server.inject({
+    //console.log('user token ', token);
+    const res = await server.inject({
           method: 'POST',
           url: '/user',
           headers: {
@@ -112,13 +116,123 @@ describe('Server Tests', () => {
           payload: {username:"insert@user.com",
                     displayname: "test",
                     password:"a1A!aaaa"}
-      });
-      console.log('/user res.result', res.result);
-      expect(res.result.status).toEqual('200');
-      expect(res.result.msg).toEqual('OK');
-
-
+    });
+    //console.log('token ', token);
+    console.log('/user res.result', res.result);
+    expect(res.result.status).toEqual('200');
+    expect(res.result.msg).toEqual('OK');
   });
+  */
+  /*
+  it('/user POST, 409 Duplicate', async () => {
+    // guest token required for user POST
+
+    let payload = new TestTokenPayload().guest_TokenPayload();
+    //let payload = new TestTokenPayload().user_TokenPayload('username@user.com', 'id-xxx', 'api_user');
+    //let payload = new TestTokenPayload().user_TokenPayload('username@user.com', 'api_user');
+    //console.log('payload ', payload);
+    let secret = process.env.LB _JWT_SECRET;
+    let token = 'Bearer ' + Jwt.token.generate(payload, secret);
+    //console.log('user token ', token);
+    const res = await server.inject({
+          method: 'POST',
+          url: '/user',
+          headers: {
+            authorization: token
+          },
+          payload: {username:"insert@user.com",
+                    displayname: "test",
+                    password:"a1A!aaaa"}
+    });
+    //console.log('token ', token);
+    //console.log('/user res.result', res.result);
+    expect(res.result.status).toEqual('409');
+    expect(res.result.msg).toEqual('Duplicate');
+  });
+  */
+/*
+  it('/user select, 200 OK', async () => {
+    // /user DELETE is dependent on /user POST
+    // this is a admin function
+    //let payload = new TestTokenPayload().user_TokenPayload('insert@user.com', 'xxx','api_user');
+    let payload = new TestTokenPayload().admin_TokenPayload('insert@user.com', '0');
+    //console.log('payload ', payload);
+    let secret = process.env.LB _JWT_SECRET;
+    let token = 'Bearer ' + Jwt.token.generate(payload, secret);
+    //console.log('user token ', token);
+    const res = await server.inject({
+          method: 'GET',
+          url: '/user',
+          headers: {
+            authorization: token,
+            payload: { // pass payload in header because header doesnt get logged
+              criteria: {
+                pk:'username#insert@user.com',
+                sk:'const#USER'
+              },
+              options: {}
+            }
+          }
+    });
+    expect(res.result.status).toEqual('200');
+    expect(res.result.msg).toEqual('OK');
+  });
+*/
+/*
+
+  it('/user select, 403 Forbidden', async () => {
+    // /user DELETE is dependent on /user POST
+    // this is a admin function
+    //let payload = new TestTokenPayload().user_TokenPayload('insert@user.com', 'xxx','api_user');
+    let payload = new TestTokenPayload().admin_TokenPayload('insert@user.com', 'xxx');
+
+    //console.log('payload ', payload);
+    let secret = process.env.LB _JWT_SECRET;
+    let token = 'Bearer ' + Jwt.token.generate(payload, secret);
+    //console.log('user token ', token);
+    const res = await server.inject({
+          method: 'GET',
+          url: '/user',
+          headers: {
+            authorization: token,
+            payload: {
+              criteria: {
+                pk:'username#insert@user.com',
+                sk:'const#USER'
+              },
+              options: {}
+            }
+          }
+    });
+    expect(res.result.status).toEqual('403');
+    expect(res.result.msg).toEqual('Forbidden');
+  });
+
+*/
+/*
+  it('/user DELETE, 200 ', async () => {
+    // /user DELETE is dependent on /user POST
+
+    let payload = new TestTokenPayload().user_TokenPayload('insert@user.com', 'xxx','api_user');
+    //console.log('payload ', payload);
+    let secret = process.env.LB _JWT_SECRET;
+    let token = 'Bearer ' + Jwt.token.generate(payload, secret);
+    //console.log('user token ', token);
+    const res = await server.inject({
+          method: 'DELETE',
+          url: '/user',
+          headers: {
+            authorization: token
+          },
+          payload: {
+            pk:'username#insert@user.com',
+            sk:'const#USER'
+          }
+    });
+    expect(res.result.status).toEqual('200');
+    expect(res.result.msg).toEqual('OK');
+  });
+*/
 
   // SIGNIN
   /*
@@ -127,7 +241,7 @@ describe('Server Tests', () => {
     // pass form payload in headers for GET
 
     let payload = new TestTokenPayload().guest_TokenPayload();
-    let secret = process.env.LB_JWT_SECRET;
+    let secret = process.env.LB _JWT_SECRET;
     let token = 'Bearer ' + Jwt.token.generate(payload, secret);
 
       const res = await server.inject({
@@ -146,7 +260,7 @@ describe('Server Tests', () => {
       //expect(res.result.zone).toBeDefined();
 
   });
-  */
+*/
 // Bad Token test
 
 // insert

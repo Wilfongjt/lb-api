@@ -2,7 +2,6 @@ import jsonQuery from 'json-query';
 import Jwt from '@hapi/jwt';
 
 import DbClientConfig from './db_client_config.js';
-//import DBClient from './db_client.js';
 
 import Chelate from '../chelates/chelate.js'
 import { ChelatePattern } from '../chelates/chelate_pattern.js'
@@ -211,7 +210,7 @@ export default class DbClientJSON {
 
     if (selection.selection.length > 0) {
       let selection_password = selection.selection[0].form.password; // users recorded password
-      let secret = process.env.LB_JWT_SECRET;
+      let secret = process.env.API_JWT_SECRET;
       let guest_payload = new TokenPayload()
                           .payload();
 

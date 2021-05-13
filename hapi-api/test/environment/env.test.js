@@ -29,22 +29,69 @@ describe('JSON Environment Vars', () => {
 */
 describe('LB Environment Vars', () => {
 
-  test('LB_API_PORT Environment Variable', () => {
-    expect(process.env.LB_API_PORT).toBeDefined();
+  test('API_PORT Environment Variable', () => {
+    expect(process.env.API_PORT).toBeDefined();
   })
 
-  test('LB_API_HOST Environment Variable', () => {
-    expect(process.env.LB_API_HOST).toBeDefined();
+  test('API_HOST Environment Variable', () => {
+    expect(process.env.API_HOST).toBeDefined();
   })
 
-  test('LB_JWT_SECRET Environment Variable', () => {
-    expect(process.env.LB_JWT_SECRET).toBeDefined();
+  test('API_JWT_SECRET Environment Variable', () => {
+    expect(process.env.API_JWT_SECRET).toBeDefined();
+  })
+
+  test('API_GUEST_TOKEN Environment Variable', () => {
+    expect(process.env.API_GUEST_TOKEN).toBeDefined();
+  })
+
+  test('API_DB_CONFIG Environment Variable', () => {
+    expect(process.env.API_DB_CONFIG).toBeDefined();
+  })
+
+  test('API_DB_USER_CONFIG Environment Variable', () => {
+    expect(process.env.API_DB_USER_CONFIG).toBeDefined();
+  })
+  
+  test('API_JWT_CLAIMS Environment Variable', () => {
+    expect(process.env.API_JWT_CLAIMS).toBeDefined();
   })
   /*
   test('DATABASE_URL Environment Variable', () => {
     expect(process.env.DATABASE_URL).toBeDefined();
   })*/
 });
+/*
+these are no longer in the api
+describe('POSTGRES_JWT_CLAIMS Environment Var', () => {
+  test('POSTGRES_DB Environment Variable', () => {
+    expect(process.env.POSTGRES_DB).toBeDefined();
+  })
+  test('POSTGRES_USER Environment Variable', () => {
+    expect(process.env.POSTGRES_USER).toBeDefined();
+  })
+  test('POSTGRES_PASSWORD Environment Variable', () => {
+    expect(process.env.POSTGRES_PASSWORD).toBeDefined();
+  })
+  test('POSTGRES_JWT_SECRET Environment Variable', () => {
+    expect(process.env.POSTGRES_JWT_SECRET).toBeDefined();
+  })
+  test('POSTGRES_API_PASSWORD Environment Variable', () => {
+    expect(process.env.POSTGRES_API_PASSWORD).toBeDefined();
+  })
+  test('POSTGRES_JWT_CLAIMS Environment Variable', () => {
+    expect(process.env.POSTGRES_JWT_CLAIMS).toBeDefined();
+    let claims = JSON.parse(process.env.POSTGRES_JWT_CLAIMS);
+    expect(claims.aud).toBeDefined();
+    expect(claims.iss).toBeDefined();
+    expect(claims.sub).toBeDefined();
+    expect(claims.user).toBeDefined();
+    expect(claims.scope).toBeDefined();
+    expect(claims.key).toBeDefined();
+  })
+
+});
+*/
 /*
 describe('JSON DB Environment Vars', () => {
 

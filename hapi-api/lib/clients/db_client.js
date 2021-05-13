@@ -229,7 +229,7 @@ export default class DbClient {
 
     if (selection.selection.length > 0) {
       let selection_password = selection.selection[0].form.password; // users recorded password
-      let secret = process.env.LB_JWT_SECRET;
+      let secret = process.env.LB _JWT_SECRET;
       let guest_payload = new TokenPayload()
                           .payload();
 
