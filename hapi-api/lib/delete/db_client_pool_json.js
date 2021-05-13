@@ -1,4 +1,4 @@
-import DbClientJson from './db_client_json.js';
+import DbClientJson from './db _client_json.js';
 export default class DbClientPoolJSON {
 
   constructor (config) {
