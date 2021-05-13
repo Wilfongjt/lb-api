@@ -56,7 +56,7 @@ Submit (PUT) Chelate with Form changes (in-chelate) to API
 
 */
 import Consts from '../../lib/constants/consts.js';
-import Criteria from '../../lib/clients/criteria.js';
+import Criteria from './criteria.js';
 
 export class ChelatePattern {
 
