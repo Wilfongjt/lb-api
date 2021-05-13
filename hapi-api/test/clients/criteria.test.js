@@ -9,10 +9,10 @@ if (process.env.NODE_ENV !== 'production') {
 import Consts from '../../lib/constants/consts.js';
 import DataTypes from '../../lib/constants/data_types.js';
 
-import { Criteria } from '../../lib/clients/criteria.js';
-import { CriteriaPK } from '../../lib/clients/criteria.js';
-import { CriteriaSK } from '../../lib/clients/criteria.js';
-import { CriteriaBest } from '../../lib/clients/criteria.js';
+import { Criteria } from '../../lib/chelates/criteria.js';
+import { CriteriaPK } from '../../lib/chelates/criteria.js';
+import { CriteriaSK } from '../../lib/chelates/criteria.js';
+import { CriteriaBest } from '../../lib/chelates/criteria.js';
 
 
 describe('Criteria', () => {
