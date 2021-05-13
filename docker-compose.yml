@@ -3,7 +3,6 @@
 
 version: '3'
 services:
-
   #############
   # POSTGRES
   # https://hub.docker.com/_/postgres
@@ -15,67 +14,68 @@ services:
     ports:
       - "5433:5432"
     environment:
+      #- POSTGRES_HOST=postgres
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_JWT_SECRET=${POSTGRES_JWT_SECRET}
-      - DATABASE_URL=${DATABASE_URL_DOCKER}
-      - LB_GUEST_PASSWORD=${LB_GUEST_PASSWORD}
-      - LB_JWT_CLAIMS=${LB_JWT_CLAIMS}
-      - LB_ENV=${LB_ENV}
-      - API_GUEST_TOKEN=${API_GUEST_TOKEN}
-      - API_USER=${API_USER}
-      - API_PASSWORD=${API_PASSWORD}
-      - API_SCOPE=${API_SCOPE}
+      - POSTGRES_API_PASSWORD=${POSTGRES_API_PASSWORD}
+      #- LB_GUEST_PASSWORD=${LB_GUEST_PASSWORD}
+      - POSTGRES_JWT_CLAIMS=${POSTGRES_JWT_CLAIMS}
+      #- LB _ENV=${LB _ENV}
+      #- API_GUEST_TOKEN=${API_GUEST_TOKEN}
+      #- API _USER=${API _USER}
+      #- API_PASSWORD=${API_PASSWORD}
+      #- POSTGRES _API_USER=${POSTGRES _API_USER}
+      #- API_SCOPE=${API_SCOPE}
       #- LB_WODEN=${LB_WODEN}
-
     volumes:
       # anything in initdb directory is created in the database
       - "./one_db/sql:/docker-entrypoint-initdb.d"
-
       # Uncomment this if you want to persist the data.
       #- "~/.data/aad_db/pgdata:/var/lib/postgresql/data"
-    networks:
-      - lb-backend
-    restart: always
+    #networks:
+    #  - lb-backend
+    #restart: always
 
-#  api:
-#    image: lyttlebit/hapi-api
-
-#    build:
-#      context: ./hapi-api
-
-#    command: >
-#      sh -c "npm install && npm install nodemon && npm run dev"
-
-#    volumes:
-#      - ./hapi-api:/usr/src/api
-
-#    ports:
-#      - "${LB_API_PORT}:5555"
-
-#    environment:
-#      - NODE_ENV=${NODE_ENV}
-#      - LB_API_PORT=${LB_API_PORT}
-#      - LB_API_HOST=${LB_API_HOST}
-#      - LB_JWT_SECRET=${LB_JWT_SECRET}
-#      - PGHOST=${PGHOST}
-#      - PGDATABASE=${PGDATABASE}
-#      - PGUSER=${PGUSER}
-#      - PGPASSWORD=${PGPASSWORD}
-#      - DATABASE_URL=postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}:5433/${PGDATABASE}
+  api:
+    image: lyttlebit/hapi-api
+    build:
+      context: ./hapi-api
+    command: >
+      sh -c "npm install && npm install nodemon && npm run dev"
+    volumes:
+      - ./hapi-api:/usr/src/api
+    ports:
+      - "${API_PORT}:5555"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - API_PORT=${API_PORT}
+      - API_HOST=${API_HOST}
+      - API_JWT_SECRET=${API_JWT_SECRET}
+      - API_GUEST_TOKEN=${API_GUEST_TOKEN}
+      - API_DB_CONFIG=${API_DB_CONFIG}
+      - API_DB_USER_CONFIG=${API_DB_USER_CONFIG}
+      - API_JWT_CLAIMS=${API_JWT_CLAIMS}
+      #- PGDATABASE=${PGDATABASE}
+      #- PG USER=${PG USER}
+      #- PG HOST=${PG HOST}
+      #- PG PORT=${PG PORT}
+      #- PG PASSWORD=${PG PASSWORD}
+      #- depAPI_DB_HOST=${API_DB_HOST}
+      #- xxxDATABASE_URL=postgresql://guest_authenticator:mysecretdatabasepassword@db:5433/one_db
+      #- xxxDATABASE_URL=postgres://guest_authenticator:mysecretdatabasepassword@$db:5433/one_db
+      #- DATABASE_URL=postgres://${API _USER}:${API_DB_PASSWORD}@${API_DB_HOST}:5433/${API_DB_DATABASE}
       #- DATABASE_URL=postgres://user:pass@postgres:5432/db
-#    depends_on:
-#      - db
+    depends_on:
+      - db
+    #links:
+    #  - "db"
+    #restart: always
 
-#    links:
-#      - "db"
-
-#    restart: always
-
-networks:
-  lb-backend:
-    driver: bridge
+#networks:
+#  lb-backend:
+#    driver: bridge
 
 
       #- JSON_DB=${JSON_DB}
@@ -116,11 +116,11 @@ networks:
     #  http://0.0.0.0:3001 |  no        | no         | no        |
 #    environment:
 #      - NODE_ENV=${NODE_ENV}
-#      - LB_API_PORT=${LB_API_PORT}
-#      - LB_API_HOST=${LB_API_HOST}
+#      - API_PORT=${API_PORT}
+#      - LB _API_HOST=${LB _API_HOST}
 #      - LB_SECRET=${LB_SECRET}
 #      - LB_API_TOKEN=${LB_API_TOKEN}
-#      - LB_JWT_CLAIMS=${LB_JWT_CLAIMS}
+#      - POSTGRES_JWT_CLAIMS=${POSTGRES_JWT_CLAIMS}
 #      - LB_BACKEND=${LB_BACKEND}
 #      - LB_CONNECTION_STR=${LB_CONNECTION_STR}
 

@@ -8,10 +8,10 @@ insert into base_0_0_1.one
   'guid#420a5bd9-e669-41d4-b917-81212bc184a3',
   '{ "username": "selectchange@user.com",
                 "displayname": "J",
-                "scope":"editor",
+                "scope":"api_user",
                 "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
     }'::JSONB,
-    'selectchange@user.com'
+    'guid#420a5bd9-e669-41d4-b917-81212bc184a3'
   );
 
 insert into base_0_0_1.one
@@ -23,7 +23,7 @@ insert into base_0_0_1.one
   '{
       "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
     }'::JSONB,
-    'selectchange@user.com'
+    'guid#420a5bd9-e669-41d4-b917-81212bc184a3'
   );
 
 insert into base_0_0_1.one
@@ -35,7 +35,7 @@ insert into base_0_0_1.one
   '{ "username": "selectchange@user.com",
                 "displayname": "J"
     }'::JSONB,
-    'selectchange@user.com'
+    'guid#420a5bd9-e669-41d4-b917-81212bc184a3'
   );
 
 insert into base_0_0_1.one
@@ -46,10 +46,10 @@ insert into base_0_0_1.one
       'guid#520a5bd9-e669-41d4-b917-81212bc184a3',
       '{"username":"existing@user.com",
               "displayname":"J",
-              "scope":"editor",
+              "scope":"api_user",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
        }'::JSONB,
-       'existing@user.com'
+       'guid#520a5bd9-e669-41d4-b917-81212bc184a3'
     );
 
 insert into base_0_0_1.one
@@ -60,10 +60,10 @@ insert into base_0_0_1.one
       'guid#620a5bd9-e669-41d4-b917-81212bc184a3',
       '{"username":"existing2@user.com",
               "displayname":"J",
-              "scope":"editor",
+              "scope":"api_user",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
       }'::JSONB,
-      'existing2@user.com'
+      'guid#620a5bd9-e669-41d4-b917-81212bc184a3'
   );
 
 insert into base_0_0_1.one
@@ -74,10 +74,10 @@ insert into base_0_0_1.one
       'guid#720a5bd9-e669-41d4-b917-81212bc184a3',
       '{"username":"delete1@user.com",
               "displayname":"J",
-              "scope":"editor",
+              "scope":"api_user",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
        }'::JSONB,
-       'delete1@user.com'
+       'guid#720a5bd9-e669-41d4-b917-81212bc184a3'
   );
 
 insert into base_0_0_1.one
@@ -88,25 +88,26 @@ insert into base_0_0_1.one
       'guid#2720a5bd9-e669-41d4-b917-81212bc184a3',
       '{"username":"delete2@user.com",
               "displayname":"J",
-              "scope":"editor",
+              "scope":"api_user",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
        }'::JSONB,
-       'delete2@user.com'
+       'guid#2720a5bd9-e669-41d4-b917-81212bc184a3'
   );
 
   insert into base_0_0_1.one
-    (sk, tk, form, owner)
+    (pk, sk, tk, form, owner)
     values (
+      'guid#xx2720a5bd9-e669-41d4-b917-81212bc184a3',
         'const#USER',
         'username#delete3@user.com',
         '{"username":"delete3@user.com",
                 "displayname":"J",
-                "scope":"editor",
+                "scope":"api_user",
                 "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
          }'::JSONB,
-         'delete3@user.com'
+         'guid#xx2720a5bd9-e669-41d4-b917-81212bc184a3'
     );
-
+/*
 insert into base_0_0_1.one
   (pk, sk, tk, form, created, owner)
   values (
@@ -115,13 +116,13 @@ insert into base_0_0_1.one
       'guid#820a5bd9-e669-41d4-b917-81212bc184a3',
       '{"username":"update@user.com",
               "displayname":"J",
-              "scope":"editor",
+              "scope":"api_user",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
        }'::JSONB,
       '2021-02-21 20:44:47.442374',
-      'update@user.com'
+      'guid#820a5bd9-e669-41d4-b917-81212bc184a3'
   );
-
+*/
 insert into base_0_0_1.one
   (pk, sk, tk, form, created, owner)
   values (
@@ -130,7 +131,7 @@ insert into base_0_0_1.one
       'const#FLIP',
       '{"username":"flip@user.com",
               "displayname":"J",
-              "scope":"editor",
+              "scope":"api_user",
               "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
        }'::JSONB,
       '2021-02-21 20:44:47.442374',

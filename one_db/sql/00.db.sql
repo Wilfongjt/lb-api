@@ -86,27 +86,36 @@
 extra code
       \set postgres_password `echo "'$POSTGRES_PASSWORD'"`
       \set postgres_jwt_secret `echo "'$POSTGRES_JWT_SECRET'"`
-      \set lb_guest_password `echo "'$LB_GUEST_PASSWORD'"`
+      \set lb _guest_password `echo "'$LB _GUEST_PASSWORD'"`
 
       select
         :postgres_password as postgres_password,
         :postgres_jwt_secret as postgres_jwt_secret,
-        :lb_guest_password as lb_guest_password;
+        :lb _guest_password as lb _guest_password;
         --:pgrst_db_uri as pgrst_db_uri;
 */
 
 --------------
 -- Environment: Read environment variables
 --------------
-\set lb_env `echo "'$LB_ENV'"`
+--\set lb _env `echo "'$LB _ENV'"`
 \set postgres_jwt_secret `echo "'$POSTGRES_JWT_SECRET'"`
-\set lb_guest_password `echo "'$LB_GUEST_PASSWORD'"`
-\set api_password `echo "'$API_PASSWORD'"`
-\set lb_jwt_claims     `echo "'$LB_JWT_CLAIMS'"`
+--\set postgres _api_user `echo "'$POSTGRES _API_USER'"`
+--\set lb _guest_password `echo "'$LB _GUEST_PASSWORD'"`
+--\set api_password `echo "'$API_PASSWORD'"`
+\set postgres_api_password `echo "'$POSTGRES_API_PASSWORD'"`
+
+\set postgres_jwt_claims     `echo "'$POSTGRES_JWT_CLAIMS'"`
 \set api_scope     `echo "'$API_SCOPE'"`
+\set owner_id 'guid#0'
 
+select :postgres_jwt_claims as postgres_jwt_claims;
+--select current_setting('app.postgres_jwt_claims')::JSONB ->> 'scope';
 
-select :lb_jwt_claims as lb_jwt_claims;
+-- select :postgres _api_user as postgres _api_user;
+select :postgres_api_password as postgres_api_password;
+
+--select :api_password as api_password;
 select :api_scope as api_scope;
 
 --------------
@@ -125,46 +134,40 @@ CREATE DATABASE one_db;
 
 \c one_db
 
--- DATABASE: Create Extensions
-CREATE EXTENSION IF NOT EXISTS pgcrypto;;
-CREATE EXTENSION IF NOT EXISTS pgtap;;
-CREATE EXTENSION IF NOT EXISTS pgjwt;;
+-- EXTENSION: pgcrypto
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- EXTENSION: pgtap
+CREATE EXTENSION IF NOT EXISTS pgtap;
+-- EXTENSION: pgjwt
+CREATE EXTENSION IF NOT EXISTS pgjwt;
+-- EXTENSION: uuid-ossp
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- ROLE: Create Roles
-
-
---CREATE ROLE authenticator noinherit login password :lb_guest_password ;
---CREATE ROLE  api_user_one noinherit login password :api_password;
-
-
---CREATE ROLE guest_one nologin noinherit; -- permissions to execute app() and insert type=owner into one_schema_1_0_0.adopt_a_drain
--- signin
-
---CREATE ROLE editor_one nologin noinherit; -- permissions to execute app() and insert type=app into one_schema_1_0_0.adopt_a_drain
--- one
--- query, insert, update, delete
-
+-- ROLE: process_logger_role
 CREATE ROLE process_logger_role nologin; -- remove when 1.2.1 is removed
+-- CREATE ROLE: event_logger_role
 CREATE ROLE event_logger_role nologin; -- as 1.2.1, replaces process_logger_role
---CREATE ROLE event_logger_role nologin;
--- GRANT: Grant authenticator more permissions
---grant guest_one to authenticator;
---grant editor_one to authenticator;
---grant api_user_one to authenticator;
---grant editor_one to api_user_one;
+--ROLE: event_logger_role nologin;
 
---CREATE ROLE guest_unable;
------
---CREATE ROLE api_guest nologin noinherit; -- one, signin, and user_ins
---grant api_guest to authenticator;
+--create a user that you want to use the database as
+-- ROLE: api_guest
+CREATE ROLE api_guest;
+-- ROLE: api_user
+CREATE ROLE api_user;
+CREATE ROLE api_admin;
 
---create a user that you want to use the database as:
-create role api_guest;
-create role api_user;
+--create the user for the web server to connect as
+-- ROLE: api_authenticator
+-- Set Environment variable POSTGRES_API_PASSWORD to change the default startup password
+CREATE ROLE api_authenticator noinherit login password 'password';
+--CREATE ROLE api_authenticator noinherit login password :postgres_api_password;
 
---create the user for the web server to connect as:
-create role guest_authenticator noinherit login password :api_password;
+--CREATE ROLE api_authenticator noinherit login password :api_password;
+--CREATE ROLE api_authenticator noinherit login password :postgres _api_user::JSONB ->> 'password';
+GRANT CONNECT ON DATABASE one_db TO api_authenticator;
 
--- allow guest_authenticator to switch to api_guest
-grant api_guest to guest_authenticator; --this looks backwards but is correct.
+-- allow api_authenticator to switch to api_guest
+-- GRANT: api_guest to api_authenticator
+GRANT api_guest to api_authenticator; --this looks backwards but is correct.
+GRANT api_user to api_authenticator; --this looks backwards but is correct.
+GRANT api_admin to api_authenticator; --this looks backwards but is correct.

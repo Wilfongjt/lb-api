@@ -4,6 +4,23 @@
 * Docker
 * Docker-compose
 
+
+# P
+* connect as api_guest
+* Signin as api_guest with guest token
+* User delete as api_guest with scope of api_user
+* User select as api_guest with scope of api_user
+* User insert as api_guest with scope of api_user
+* User update as api_guest with scope of api_user
+*
+
+# Layers
+* API Functions
+* General Dependent Functions
+* Third Party Dependent Function
+* Indpendent Functions
+
+
 # Layers        access
 * JWT Generator app-token
                 guest      
@@ -49,7 +66,7 @@ Use HTTPS for transfer of password to server.
 }
 ```
 
-### API Process 
+### API Process
 ```
 ```
 
@@ -159,5 +176,50 @@ USER is
 ```
 ## SignIn
 ```
+
+```
+## Insert Cases
+```
+-- Use CASES
+-- * is whatever
+-- (JSON)
+-- {pk:a#v1, sk:b#v2, tk:c#v3, form:{a:v1, b:v2, c:v3, d:v4}} -- insert only {pk,sk,tk} {form
+-- {pk:a#v1, sk:b#v2,          form:{a:v1, b:v2,       d:v4}} -- insert only {pk,sk,*} {form}
+-- {         sk:b#v2, tk:c#v3, form:{*:* , b:v2, c:v3, d:v4}} -- insert      {*,sk,tk} {form}
+
+Updates
+   (pk,     sk,      form) {a,   b,   c,    d }
+   (TEXT,   TEXT,    JSON, JSON)
+-- pk:a#v1, sk:b#v2, form: {a:v1,             d:v4} -- no change
+-- pk:a#v1, sk:b#v2, form: {      b:v2,       d:v4} -- no change
+-- pk:a#v1, sk:b#v2  form: {            c:v3, d:v4} -- no change
+-- pk:a#v1, sk:b#v2, form: {a:v1, b:v2,       d:v4} -- no change
+-- pk:a#v1, sk:b#v2, form: {      b:v2, c:v3, d:v4} -- no change
+-- pk:a#v1, sk:b#v2, form: {a:v1,       c:v3, d:v4} -- no change
+-- pk:a#v1, sk:b#v2, form: {a:v1, b:v2, c:v3, d:v4} -- no change
+
+-- pk:a#v1, sk:b#v2, form: {a:v1,             d:v5} -- non-key change
+-- pk:a#v1, sk:b#v2, form: {      b:v2,       d:v5} -- non-key
+-- pk:a#v1, sk:b#v2  form: {            c:v3, d:v5} -- non-key
+-- pk:a#v1, sk:b#v2, form: {a:v1, b:v2,       d:v5} -- non-key
+-- pk:a#v1, sk:b#v2, form: {      b:v2, c:v3, d:v5} -- non-key change
+-- pk:a#v1, sk:b#v2, form: {a:v1,       c:v3, d:v5} -- non-key change
+-- pk:a#v1, sk:b#v2, form: {a:v1, b:v2, c:v3, d:v5} -- non-key change
+
+-- Key Change Cases
+-- pk:a#v1, sk:b#v2, form: {a:n1,             d:v4} -- 1 key change
+-- pk:a#v1, sk:b#v2, form: {      b:n2,       d:v4} -- 1 key change
+-- pk:a#v1, sk:b#v2, form: {            c:n3, d:v4} -- 1 key change
+-- pk:a#v1, sk:b#v2, form: {a:n1, b:n2,       d:v4} -- 2 key change
+-- pk:a#v1, sk:b#v2, form: {      b:n2, c:n3, d:v4} -- 2 key change
+-- pk:a#v1, sk:b#v2, form: {a:n1, b:n2, c:n3, d:v4} -- 3 key change
+
+-- pk:a#v1, sk:b#v2, form: {a:n1,             d:v5} -- 1 key change & non-key change
+-- pk:a#v1, sk:b#v2, form: {      b:n2,       d:v5} -- 1 key change & non-key change
+-- pk:a#v1, sk:b#v2, form: {            c:n3, d:v5} -- 1 key change & non-key change
+-- pk:a#v1, sk:b#v2, form: {a:n1, b:n2,       d:v5} -- 2 key change & non-key change
+-- pk:a#v1, sk:b#v2, form: {      b:n2, c:n3, d:v5} -- 2 key change & non-key change
+-- pk:a#v1, sk:b#v2, form: {a:n1, b:n2, c:n3, d:v5} -- 3 key change & non-key change
+if
 
 ```

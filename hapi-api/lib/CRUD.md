@@ -1,6 +1,6 @@
 # Chelate
 The chelate is a data wrapper.  The word chelate is derived from the greek word for claw.
-* Chelate is  {"pk":"","sk":"","tk":"","form":{},"active":"","created":"","updated":""}
+* Chelate is  {"pk":"","sk":"","tk":"","form":{},"active":"","created":"","updated":"","owner":""}
 * pk is an immutable key
 * sk is an immutable key
 * tk is an immutable key
@@ -8,6 +8,7 @@ The chelate is a data wrapper.  The word chelate is derived from the greek word 
 * active is mark
 * created is an immutable date and time stamp
 * updated is the last date and time the form or active fields were changed
+* owner is the person who added the chelate
 
 # Expect
 * The backend will generate GUID for missing pk value
@@ -15,12 +16,13 @@ The chelate is a data wrapper.  The word chelate is derived from the greek word 
 * sk is required
 * form is required
 
-# Front End Responsibilities
+# API Front End Responsibilities
 
-* collect required data
+* handle API authentication
+* collect user data (CRUD)
+* collect application data (CRUD)
 * validate data
-* determine key values from data
-* create a chelate, wrap data with keys (pk, sk, and tk)
+* create a chelate, wrap data with keys (pk, sk, and tk, form)
 * route new chelate to server via POST
 * route updated chelate to server via PUT
 * route selected chelate to server via GET
@@ -38,6 +40,8 @@ The chelate is a data wrapper.  The word chelate is derived from the greek word 
 * provide function to insert a chelate
 * provide function to update a chelate
 * provide function to delete a chelate
+* provide function to signup a user
+* provide function to signin a user
 
 
 # User

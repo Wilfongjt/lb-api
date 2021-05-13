@@ -1,67 +1,69 @@
 'use strict';
-//const assert = require('assert');
-
+// [Server]
+// [Server Launch]
 import dotenv from 'dotenv';
 
 if (process.env.NODE_ENV !== 'production') {
+  // [Load Environment variables when not in production]
   process.env.DEPLOY_ENV=''
   const path = require('path');
   dotenv.config({ path: path.resolve(__dirname, '../../.env') });
-  //console.log('init env',process.env);
-
 }
-//assert(process.env.DATABASE_URL, 'Please set DATABASE_URL Env Variable');
-
-//console.log('XXXXX env', process.env);
-// HAPI
+// [Use JWT to control access to API]
 import Jwt from '@hapi/jwt';
+// [Use HAPI to implement API]
 import Hapi from '@hapi/hapi';
+// [Use JOI to  validate API inputs]
 import Joi from 'joi';
-// swagger
+// [Use swagger to facilitate manual interaction with API]
 import Inert from '@hapi/inert';
 import Vision from '@hapi/vision';
 import HapiSwagger from 'hapi-swagger';
 import Pack from '../package';
-//const HapiPostgresConnection = require('hapi-postgres-connection');
 
-//import HapiPostgresConnection from 'hapi-postgres-connection';
+// [Use HapiPgPoolPlugin to start, create, and disconnect postgres client db connections]
 import HapiPgPoolPlugin from './plugins/postgres/hapi_pg_pool_plugin.js';
-import { EnvConf } from './environment/env_config.js';
+// import { Env Conf } from './environment/env_config.js';
 
-import { LbEnv } from './environment/lb_env.js';
+//import { LbEnv } from './environment/lb_env.js';
 // Data Client
-//import DbClientRouter from './clients/db_client_router.js';
+// [Use helper functions to handle configuration]
+import { UserConfig } from './config/user_config.js';
+import { DatabaseConfig } from './config/database_config.js';
+import { ConnectionConfig } from './config/connection_config.js';
 
 // application handlers
+// [Use a chelate metaphor to handle packing all data objects into a single table]
 import { ChelateUser } from './chelates/chelate_user.js';
 
-// ROUTES
+// [Create Example Routes]
 import root_route from './routes/examples/root_route.js'; // example
 import restricted_route from './routes/examples/restricted_route.js'; // example
 import time_route from './routes/examples/time_route.js'; // example
 
-//import HapiPgRouteHelper from './routes/postgres/helpers/hapi_pg_route_helper.js';
-
 //these need to be rewritten to use the /pg_one
-import user_route_post from './routes/auth/user_route_post.js';
-/*
-import user_route_put from '../routes/auth/user_route_put.js';
-import user_route_get from '../routes/auth/user_route_get.js';
-*/
+// [Signup and Sigin RoutesCreate User Route]
+import signup_route_post from './routes/auth/signup_route_post.js';
 import signin_route_post from './routes/auth/signin_route_post.js';
+// [Create User Route to demonstrate POST, GET, PUT, and DELETE]
+import user_route_post from './routes/auth/user_route_post.js';
+import user_route_delete from './routes/auth/user_route_delete.js';
+import user_route_get from './routes/auth/user_route_get.js';
 
-//import pg_route_get from './routes/postgres/pg_route_get.js';
+import user_route_put from './routes/auth/user_route_put.js';
 
-//import pg_one_plugin from './plugins/postgres/pg_one_plugin.js';
-//import my_plugin from './plugins/examples/my_plugin.js';
+// [Initialize User Configuration]
+const user_config = new UserConfig(process.env.API_DB_USER_CONFIG);
+const database_config = new DatabaseConfig(process.env.API_DB_CONFIG);
 
-const lbEnv = new LbEnv();
-const secret = lbEnv.get('LB_JWT_SECRET');
-const port = 5555; // lbEnv.get('LB_API_PORT');
-const host = lbEnv.get('LB_API_HOST') ;
-
+//const lbEnv = new LbEnv();
+//const secret = lbEnv.get('API_JWT_SECRET');
+const port = 5555;
+const host = process.env.API_HOST ;
+//const host = lbEnv.get('API_HOST') ;
 
 const server = Hapi.Server({ host: host, port: port});
+
 const swaggerOptions = {
     info: {
             title: 'Test API Documentation',
@@ -72,52 +74,58 @@ const swaggerOptions = {
 const registrations = [
   Inert,
   Vision,
+  // [Register Swagger Plugin]
   {
       plugin: HapiSwagger,
       options: swaggerOptions
   },
+  // [Register JWT Plugin]
   Jwt,
+  // [Register Postgres Connection Pool Plugin]
   {
     plugin: HapiPgPoolPlugin,
     options: {
       config: {
-        user: process.env.API_USER || '<username>',
-        password: process.env.API_PASSWORD || '<database password>',
-        host: process.env.API_DB_HOST || '<host>',
-        database: process.env.API_DB_DATABASE || '<database>',
-        port: process.env.API_DB_PORT || 5433,
-        guest_token: process.env.API_GUEST_TOKEN
+        user: user_config.user || 'guest_authenticator' || '<username>',
+        password: user_config.password || 'guestauthenticatorsecretdatabasepassword' || '<database password>',
+        host: database_config.host || 'db' || '<host>',
+        database: database_config.database || 'one_db' || '<database>',
+        port: database_config.port || 5432 || '<port>',
+        guest_token: process.env.API_GUEST_TOKEN  || '<jwt-token>'
       }
     }
   }
 ];
 
-
 const api_routes = [
+  // [Example Route to root]
   root_route,
+  // [Example Route restricted with JWT]
   restricted_route,
+  // [Example Route to API]
   time_route,
-signin_route_post,
-user_route_post
+  // [Register Signin Route]
+  signin_route_post,
+  // [Register Signup Route]
+  signup_route_post,
+  // [Register User POST Route]
+  user_route_post,
+  // [Register User DELETE Route]
+  user_route_delete,
+  // [Register User GET Route ]
+  user_route_get,
+  // [Register User PUT Route]
+  user_route_put
 ];
 
-/*
-const api_routes = [
-  root_route, // example
-  restricted_route, // example
-  user_route_post,
-  user_route_put,
-  user_route_get,
-  signin_route_post
-];
-*/
 const strategy =  function () {
+  // [Authorization Strategy]
   return {
-    keys: process.env.LB_JWT_SECRET,
+    keys: process.env.API_JWT_SECRET,
     verify: {
-        aud: 'api-client',
-        iss: 'lyttlebit',
-        sub: false
+        aud: JSON.parse(process.env.API_JWT_CLAIMS).aud || '<audience>',
+        iss: JSON.parse(process.env.API_JWT_CLAIMS).iss || '<issuer>',
+        sub: JSON.parse(process.env.API_JWT_CLAIMS).sub || '<subject>'
     },
     validate: (artifacts, request, h) => {
         if (! artifacts.decoded.payload.user) {
@@ -137,18 +145,12 @@ const strategy =  function () {
 }
 
 exports.init = async () => {
-  //console.log('init A');
-    //await server.register(Jwt);
-    //server.table().forEach((route) => console.log(`${route.method}\t${route.path}`));
+  // [Initialize server for testing]
 
-    //console.log('server.table ',server.table().length);
-    //if (server.table.length === 0) {
-      console.log('init register');
       try {
         await server.register(
           registrations
         );
-
       // set authentication strategy
       server.auth.strategy('lb_jwt_strategy', 'jwt', strategy() );
       server.auth.default('lb_jwt_strategy');
@@ -157,7 +159,7 @@ exports.init = async () => {
       // use for testing
       await server.initialize();
     } catch(e ){
-      console.log('init DATABASE_URL ',process.env.DATABASE_URL);
+      //console.log('init DATABASE_URL ',process.env.DATABASE_URL);
       console.log('init register ', e);
     } finally {
       /*
@@ -181,31 +183,26 @@ exports.init = async () => {
 
 
 exports.start = async () => {
-  //console.log('start A');
-
-  //server.table().forEach((route) => console.log(`${route.method}\t${route.path}`));
-
-    //await server.register(Jwt);
+  // [Start server for general use]
     await server.register(
       registrations
     );
-
-    // set authentication strategy
+    // [Set authorization strategy]
     server.auth.strategy('lb_jwt_strategy', 'jwt', strategy() );
-    // Set the strategy
     server.auth.default('lb_jwt_strategy');
-
+    // [Load routes]
     server.route(api_routes);
     // starts server for use
-
+    // [Launch the server]
     await server.start();
+    // [Give some feedback about routes]
     let swaggered = false;
-    if (process.env.LB_API_PORT) {
+    if (process.env.API_PORT) {
       console.log('When using docker-compose');
-      // server.table().forEach((route) => console.log(`${route.method}\thttp://${process.env.LB_API_HOST}:${process.env.LB_API_PORT}${route.path}`));
+      // server.table().forEach((route) => console.log(`${route.method}\thttp://${process.env.API_HOST}:${process.env.API_PORT}${route.path}`));
       server.table().forEach((route) => {
         if (!route.path.includes('swagger')) {
-          console.log(`${route.method}\thttp://${process.env.LB_API_HOST}:${process.env.LB_API_PORT}${route.path}`);
+          console.log(`${route.method}\thttp://${process.env.API_HOST}:${process.env.API_PORT}${route.path}`);
         } else {
           swaggered = true;
         }
@@ -223,9 +220,31 @@ exports.start = async () => {
     if (swaggered) {
       console.log(`Swagger enabled at /documentation`);
     }
+    if (process.env.NODE_ENV === 'development') {
 
-    console.log('guest token', );
+      console.log('Environment')
+      for (let ev in process.env) {
+        //console.log(ev);
+        if (ev.startsWith('LB')) {
+          // [No environment variable starting with LB_]
+          console.log(ev, process.env[ev]);
+        }
+        if (ev.startsWith('API')) {
+          // [Api environment variables start with API]
+          console.log(ev, process.env[ev]);
+        }
+        if (ev.startsWith('POSTGRES')) {
+          // [No environment variables starting with POSTGRES]
+          console.log(ev, process.env[ev]);
+        }
+        if (ev.startsWith('PG')) {
+          // [No environment variable starting with PG]
+          console.log(ev, process.env[ev]);
+        }
+      }
+    }
 
+    //console.log('user_config.password',user_config.password);
     return server;
 };
 
@@ -248,6 +267,6 @@ process.on('SIGINT', function () {
 });
 */
 server.events.on('stop', () => {
-
+    // [Stops server when ???]
     console.log('Server stopped.');
 });
