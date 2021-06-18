@@ -121,18 +121,17 @@ select :api_scope as api_scope;
 --------------
 -- DATABASE
 --------------
---Drop database if exists one_db ;
 
---do $$
---BEGIN
---if not exists(SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('one_db')) then
---  CREATE DATABASE one_db;
+--if exists(SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('one_db')) then
+--  select 'hi';
 --end if;
---END;
---$$ LANGUAGE plpgsql;
-
-SELECT 'CREATE DATABASE one_db'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'one_db')\gexec
+do $$
+BEGIN
+if not exists(SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('one_db')) then
+CREATE DATABASE one_db;
+end if;
+END;
+$$ LANGUAGE plpgsql;
 
 ---------------
 -- Security, dont let users create anything in public

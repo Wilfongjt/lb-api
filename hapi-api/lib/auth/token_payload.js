@@ -49,7 +49,7 @@ export default class TokenPayload {
     this.token_payload.user=user;
     return this;
   }
-  scope(scope){
+  scope_(scope){
     if (typeof(scope) === 'string') {
 
       //this.token_payload.assign(scope);

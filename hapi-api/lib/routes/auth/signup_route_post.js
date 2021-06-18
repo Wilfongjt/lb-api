@@ -32,18 +32,16 @@ module.exports = {
       token = req.headers.authorization; // guest token
       // [Get a database client from request]
       client = req.pg;
-      // [Get pk from request]
+      // [Get pk from request.payload]
       form = req.payload;
-      //console.log('route signup insert 2 rollback', rollback);
-      //console.log('route signup insert 3 token',token);
-      //console.log('route signup insert 4 client ',client);
-      //console.log('route signup insert 5 form ', form);
+
       // [Insert User into the database]
       await client.query('BEGIN');
+
       let res = await client.query(
         {
           text: 'select * from api_0_0_1.signup($1::TEXT,$2::JSON)',
-          values: [token.replace('Bearer ',''),
+          values: [token,
                    JSON.stringify(form)]
         }
       );

@@ -15,11 +15,28 @@ module.exports = {
     let form ;
 
     try {
+      // [Optionally insert a test user]
+      let test = req.headers.test || false;
       // [Get the API Token from request]
       token = req.headers.authorization; // guest token
       // [Get a database client from request]
       client = req.pg;
+      // [Get form from request.params]
       form = req.payload;
+
+      if (test) {
+        // [Inititate a transation when test is invoked]
+        await client.query('BEGIN');
+        // [Insert a transation when test is invoked]
+        let res = await client.query(
+          {
+            text: 'select * from api_0_0_1.signup($1::TEXT,$2::JSON)',
+            values: [token,
+                     JSON.stringify(test)]
+          }
+        );
+      }
+
       // [Get credentials from request]
       let res = await client.query(
         {
@@ -30,21 +47,24 @@ module.exports = {
       );
 
       result = res.rows[0].signin;
+      if (test) {
+        // [Rollback transaction when when test is invoked]
+        await client.query('ROLLBACK');
+      }
 
-      /*
-      if (result.status !== '200') {
-        result['payload'] = req.payload;
-        result['payload'].password = '********';
-      }*/
     } catch (err) {
       // [Catch any exceptions]
+      if (test) {
+        // [Rollback transacton when excepton occurs and test is invoked]
+        await client.query('ROLLBACK');
+      }
       result.status = '500';
       result.msg = 'Unknown Error'
       result['error'] = err;
       console.error('/signin err',err);
     } finally {
+      // [Release client back to pool]
       client.release();
-
       // [Return {status, msg, token}]
       return result;
     }
