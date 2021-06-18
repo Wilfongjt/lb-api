@@ -37,7 +37,7 @@ module.exports = {
       let res = await client.query(
         {
           text: 'select * from api_0_0_1.user($1::TEXT,$2::JSON)',
-          values: [token.replace('Bearer ',''),
+          values: [token,
                    form]
         }
       );
@@ -71,7 +71,7 @@ module.exports = {
           mode: 'required',
           strategy: 'lb_jwt_strategy',
           access: {
-            scope: ['api_guest']
+            scope: ['api_admin']
           }
         },
         validate: {

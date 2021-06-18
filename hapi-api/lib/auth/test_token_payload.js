@@ -51,13 +51,16 @@ export default class TestTokenPayload {
     if (!key){
       throw 'user_TokenPayload is requires a key';
     }
+    if (!key.includes('#') ) {
+      throw 'user_TokenPayload requires a key with a #, eg guid#somevalue';
+    }
     if (!scope){
       throw 'user_TokenPayload is requires a scope';
     }
     return new TokenPayload()
                  .user(username)
                  .key(key)
-                 .scope(scope)
+                 .scope_(scope)
                  .payload();
   }
   admin_TokenPayload(username, key) {
@@ -70,7 +73,7 @@ export default class TestTokenPayload {
     return new TokenPayload()
                  .user(username)
                  .key(key)
-                 .scope('api_admin')
+                 .scope_('api_admin')
                  .payload();
   }
   /*

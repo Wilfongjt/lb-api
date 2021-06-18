@@ -13,7 +13,7 @@ import TestTokenPayload from '../../lib/auth/test_token_payload.js';
 
 
 
-describe('User Route ', () => {
+describe('Signup Route ', () => {
   let server = null;
 
   beforeAll(async () => {
@@ -24,13 +24,15 @@ describe('User Route ', () => {
 
   afterAll(async () => {
      //console.log('restricted server stop');
-      await server.stop();
+     // delete test user
 
+      await server.stop();
+      // delete record
   });
 
 
   // signup
-  it('/signup : Signup (POST), response 200', async () => {
+  it('/signup : guest_token can POST Signup, 200', async () => {
       // Goal: Create an application user
       // Strategy: only guest token can signin
       //           set validation in route route.options.auth
@@ -57,7 +59,7 @@ describe('User Route ', () => {
       //expect(res.result.token).toBeDefined();
   });
   // signin
-  it('/signin : Signin (POST), response 200', async () => {
+  it('/signin : guest_token can POST Signin, 200', async () => {
       // Goal: Singin  application user
       // Strategy: only guest token can signin
       //           set validation in route route.options.auth
@@ -66,21 +68,27 @@ describe('User Route ', () => {
       let payload = new TestTokenPayload().guest_TokenPayload();
       let secret = process.env.API_JWT_SECRET;
       let token = 'Bearer ' + Jwt.token.generate(payload, secret);
-
-      //console.log('TEST signin A signup res1.result ', res1.result);
-      //console.log('TEST signin username ', username);
-      //console.log('TEST signin ',);
+      let test_form = {
+        username: username,
+        displayname : username,
+        password: 'a1A!aaaa'
+      };
+      // Sigin in
+      // test is just for testing dont use in production
       const res = await server.inject({
           method: 'post',
           url: '/signin',
           headers: {
-            authorization: token
+            authorization: token,
+            test: test_form
           },
           payload: {
             username: username,
             password: 'a1A!aaaa'
           }
       });
+
+      // Delete record
 
       //console.log('TEST signin B res.result ', res.result);
       expect(res.statusCode).toEqual(200);

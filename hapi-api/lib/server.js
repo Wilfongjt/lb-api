@@ -146,7 +146,6 @@ const strategy =  function () {
 
 exports.init = async () => {
   // [Initialize server for testing]
-
       try {
         await server.register(
           registrations
@@ -268,5 +267,5 @@ process.on('SIGINT', function () {
 */
 server.events.on('stop', () => {
     // [Stops server when ???]
-    console.log('Server stopped.');
+    //console.log('Server stopped.');
 });
