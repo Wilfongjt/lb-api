@@ -70,6 +70,10 @@ module.exports = {
     }
   },
   options: {
+        cors: {
+            origin:["*"],
+            headers:['Accept', 'Authorization', 'Content-Type', 'If-None-Match', 'Content-Profile']
+        },
         description: 'User Signin with Guest Token',
         notes: 'signin(token, credentials) Returns a {credentials: {username: email}, authentication: {token: JWT} | false }',
         tags: ['api'],
