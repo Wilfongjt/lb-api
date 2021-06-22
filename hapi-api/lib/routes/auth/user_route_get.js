@@ -90,6 +90,10 @@ module.exports = {
     }
   },
   options: {
+        cors: {
+            origin:["*"],
+            headers:['Accept', 'Authorization', 'Content-Type', 'If-None-Match', 'Content-Profile']
+        },
         description: 'Restricted access',
         notes: 'Returns ',
         tags: ['api'],

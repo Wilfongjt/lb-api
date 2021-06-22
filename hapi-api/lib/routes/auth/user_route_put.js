@@ -91,6 +91,10 @@ module.exports = {
     }
   },
   options: {
+        cors: {
+            origin:["*"],
+            headers:['Accept', 'Authorization', 'Content-Type', 'If-None-Match', 'Content-Profile']
+        },
         description: 'Update User',
         notes: 'Returns ',
         tags: ['api'],
