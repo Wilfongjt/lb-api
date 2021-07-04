@@ -21,20 +21,11 @@
 -- DONE 1.2.1: add tk to adoptee insert
 -- DONE 1.2.1: add tk to signin
 
---\set lb _env `echo "'$LB _ENV'"`
+
 \set postgres_jwt_secret `echo "'$POSTGRES_JWT_SECRET'"`
---\set lb _guest_password `echo "'$LB _GUEST_PASSWORD'"`
 \set postgres_jwt_claims `echo "'$POSTGRES_JWT_CLAIMS'"`
 \set dep_api_scope     `echo "'$API_SCOPE'"`
 \set postgres_api_password `echo "'$POSTGRES_API_PASSWORD'"`
-
-
---select :lb _env as lb _env;
---select :lb _guest_password as lb _guest_password;
---select :postgres_jwt_secret as postgres_jwt_secret;
---select :postgres_jwt_claims as postgres_jwt_claims;
---select :dep_api_scope as api_scope;
-
 
 ---------------
 -- SCHEMA: Create Schema

@@ -1,8 +1,7 @@
 
 \c one_db;
 
-SET search_path TO api_0_0_1, public;
-
+SET search_path TO base_0_0_1, public;
 /*
  _        _     _
 | |      | |   | |
@@ -17,7 +16,7 @@ SET search_path TO api_0_0_1, public;
 ------------------
 BEGIN;
 
-  SELECT plan(3);
+  SELECT plan(2);
 
   SELECT has_table('base_0_0_1', 'one', 'has table');
 
@@ -27,3 +26,4 @@ BEGIN;
   SELECT * FROM finish();
 
 ROLLBACK;
+-- END;

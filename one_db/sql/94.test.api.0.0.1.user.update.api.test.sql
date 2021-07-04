@@ -2,18 +2,6 @@
 
 SET search_path TO api_0_0_1, base_0_0_1, public;
 
-/*
-Update User  token, <username>|<guid>, {username:<value>, displayname:<value>, password:<value>}
-Update User  token, <username>|<guid>, {username:<value>}
-Update User  token, <username>|<guid>, {                  displayname:<value>}
-Update User  token, <username>|<guid>, {                                       password:<value>}
-Update User  token, <username>|<guid>, {username:<value>, displayname:<value>}
-Update User  token, <username>|<guid>, {                  displayname:<value>, password:<value>}
-Update User  token, <username>|<guid>, {username:<value>,                      password:<value>}
-
-*/
-
-
 BEGIN;
 
 insert into base_0_0_1.one
@@ -35,24 +23,7 @@ insert into base_0_0_1.one
 \set admin_token sign((current_setting('''app.postgres_jwt_claims''')::JSONB || '''{"user":"update@user.com", "scope":"api_admin","key":"updateUserKey"}'''::JSONB)::JSON, current_setting('''app.settings.jwt_secret'''))::TEXT
 
 -- insert used only for testing
-/*
-insert into base_0_0_1.one
-  (pk, sk, tk, form, active, created, updated, owner)
-  values (
-      'username#update@user.com',
-      'const#USER',
-      'guid#820a5bd9-e669-41d4-b917-81212bc184a3',
-      '{"username":"update@user.com",
-              "displayname":"J",
-              "scope":"api_user",
-              "password": "$2a$06$TXVF4CDfUcHXvTeOIGrEn.BSGbbCzLxMu2t8tyZimKtsBRxxyeQBK"
-       }'::JSONB,
-       'true'::BOOLEAN,
-      '2021-02-21 20:44:47.442374',
-      '2021-02-21 20:44:47.442374',
-      'guid#820a5bd9-e669-41d4-b917-81212bc184a3'
-  );
-*/
+
   SELECT plan(5);
   -- 1 query
   SELECT has_function(
@@ -155,3 +126,4 @@ insert into base_0_0_1.one
   SELECT * FROM finish();
 
 ROLLBACK;
+-- END;

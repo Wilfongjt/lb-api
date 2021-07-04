@@ -20,10 +20,6 @@ BEGIN;
   \set user_token sign((current_setting('''app.postgres_jwt_claims''')::JSONB || '''{"user":"signup@user.com", "scope":"api_user"}'''::JSONB)::JSON, current_setting('''app.settings.jwt_secret'''))::TEXT
   \set admin_token sign((current_setting('''app.postgres_jwt_claims''')::JSONB || '''{"user":"signup@user.com", "scope":"api_admin"}'''::JSONB)::JSON, current_setting('''app.settings.jwt_secret'''))::TEXT
 
-  -- insert
-  -- var1 = [NULL, '',   guest_token, user_token]
-  -- var2 = [NULL, NULL, NULL,        NULL]
-  -- out  = [403, 403, 200, 403]
   -- 1 INSERT
   SELECT has_function(
       'api_0_0_1',
@@ -146,3 +142,4 @@ SELECT is (
   SELECT * FROM finish();
 
 ROLLBACK;
+-- END;

@@ -1,25 +1,34 @@
 
 \c one_db;
 
-SET search_path TO api_0_0_1,  base_0_0_1, public;
-
+--SET search_path TO api_0_0_1,  base_0_0_1, public;
+SET search_path TO base_0_0_1, public;
 
 
 --==================
 -- Chelate
 --==================
 /*
-__      __   _ _     _       _          _____ _          _       _
-\ \    / /  | (_)   | |     | |        / ____| |        | |     | |
- \ \  / /_ _| |_  __| | __ _| |_ ___  | |    | |__   ___| | __ _| |_ ___
-  \ \/ / _` | | |/ _` |/ _` | __/ _ \ | |    | '_ \ / _ \ |/ _` | __/ _ \
-   \  / (_| | | | (_| | (_| | ||  __/ | |____| | | |  __/ | (_| | ||  __/
-    \/ \__,_|_|_|\__,_|\__,_|\__\___|  \_____|_| |_|\___|_|\__,_|\__\___|
-
-
+  _____ _          _       _
+ / ____| |        | |     | |
+| |    | |__   ___| | __ _| |_ ___
+| |    | '_ \ / _ \ |/ _` | __/ _ \
+| |____| | | |  __/ | (_| | ||  __/
+ \_____|_| |_|\___|_|\__,_|\__\___|
 
 */
-
+/* value found in table
+'username#update@user.com',
+'const#TEST',
+'guid#820a5bd9-e669-41d4-b917-81212bc184a3',
+'{"username":"update@user.com",
+        "displayname":"J",
+        "password":{
+          "hash":"4802a10ae464b8c4cd2635c3d7b1ac8a40760ef49101a7a35c2629f6e0a2f2bc51e6a51d4837408be93cf4c2d74bed31fc8c3835a7590e9bd6c9d2533bf496b8",
+          "salt":"4b24582a5ae088b8fb6fd3f353d63d6f"
+        }
+ }
+*/
 BEGIN;
 
   SELECT plan(2);
@@ -27,38 +36,28 @@ BEGIN;
   -- 1
   SELECT has_function(
       'base_0_0_1',
-      'validate_chelate',
-      ARRAY[ 'JSONB', 'TEXT' ],
-      'Function validate_chelate(jsonb, TEXT) exists'
+      'chelate',
+      ARRAY[ 'JSONB', 'JSONB' ],
+      'Function chelate(jsonb, jsonb) exists'
   );
+  -- 2
   SELECT ok (
-    base_0_0_1.validate_chelate(
-      '{}'::JSONB,
-      'pstfoacu'::TEXT
-    )::JSONB is not NULL,
-    'validate_chelate (chelate JSONB, expected TEXT) 0_0_1'::TEXT
-  );
-  SELECT ok (
-    base_0_0_1.validate_chelate(
+    base_0_0_1.chelate(
+      '{"pk":"a","sk":"b","tk":"c"}'::JSONB,
       '{
-          "pk":"a#v1",
-          "sk":"b#v2",
-          "tk":"c#v3",
-          "form": {
-            "a":"v1",
-            "b":"v2",
-            "c":"v3",
-            "d":"v4"
-          }
-        }'::JSONB,
-        'PSTFoacu'::TEXT
-    )::JSONB is not NULL,
-    'validate_chelate (chelate JSONB, expected TEXT) 0_0_1'::TEXT
+          "a":"v1",
+          "b":"v2",
+          "c":"v3",
+          "d":"v4"
+        }'::JSONB
+    )::JSONB ->> 'pk' = 'a#v1',
+    'chelate (keys JSONB, form JSONB) 0_0_1'::TEXT
   );
   SELECT * FROM finish();
 
 ROLLBACK;
-/*
+-- END;
+
 BEGIN;
 
   SELECT plan(10);
@@ -69,7 +68,7 @@ BEGIN;
       ARRAY[ 'JSONB' ],
       'Function chelate(jsonb) exists'
   );
-
+  -- 2
   SELECT ok (
     (base_0_0_1.chelate(
       '{
@@ -83,7 +82,7 @@ BEGIN;
     ) ->> 'form')::JSONB  = '{"displayname":"k"}'::JSONB,
     'chelate No key changes when form missing key values and displayname changed 0_0_1'::TEXT
   );
-
+  -- 3
   -- chelate prove 'changed' is immutable 0_0_1
   SELECT ok (
     base_0_0_1.chelate(
@@ -99,6 +98,7 @@ BEGIN;
     ) ->> 'created' = '2021-02-21 20:44:47.442374',
     'chelate "changed" is immutable 0_0_1'::TEXT
   );
+  -- 4
   SELECT ok (
     base_0_0_1.chelate(
       '{
@@ -113,6 +113,7 @@ BEGIN;
     ) ->> 'updated' != '2021-02-21 20:44:47.442374',
     'chelate "updated" is mutable 0_0_1'::TEXT
   );
+  -- 5
   -- no pk change
   SELECT ok (
     base_0_0_1.chelate(
@@ -131,6 +132,7 @@ BEGIN;
 
     'chelate PK changes when form displayname changed 0_0_1'::TEXT
   );
+  -- 6
   -- no sk change
   SELECT ok (
     base_0_0_1.chelate(
@@ -149,7 +151,7 @@ BEGIN;
 
     'chelate SK changes when form displayname changed 0_0_1'::TEXT
   );
-
+  -- 7
   -- no tk change
   SELECT ok (
     base_0_0_1.chelate(
@@ -167,7 +169,7 @@ BEGIN;
     ) ->> 'tk' = 'guid#820a5bd9-e669-41d4-b917-81212bc184a3',
     'chelate TK changes when form displayname changed 0_0_1'::TEXT
   );
-
+  -- 8
   SELECT ok (
     (base_0_0_1.chelate(
       '{
@@ -185,7 +187,7 @@ BEGIN;
 
     'chelate Detect pk key changes 0_0_1'::TEXT
   );
-
+  -- 9
   SELECT ok (
     base_0_0_1.chelate(
       '{
@@ -203,7 +205,7 @@ BEGIN;
 
     'chelate Detect sk key changes 0_0_1'::TEXT
   );
-
+  -- 10
   SELECT ok (
     base_0_0_1.chelate(
       '{
@@ -221,9 +223,10 @@ BEGIN;
 
     'chelate Detect tk key changes 0_0_1'::TEXT
   );
-
+  -- 11
   SELECT ok (
     base_0_0_1.chelate(
+
       '{
           "pk":"username#update@user.com",
           "sk":"const#TEST",
@@ -238,9 +241,27 @@ BEGIN;
     ) ->> 'pk' = 'username#CHANGEupdate@user.com',
     'chelate Detect pk sk tk key changes 0_0_1'::TEXT
   );
-
-
+  -- 12
+  /*
+  updated won't delete for a proper comparison
+  SELECT is (
+    (base_0_0_1.chelate(
+      '{
+          "pk":"username#update@user.com",
+          "sk":"const#USER",
+          "tk":"guid#duckduckgoose",
+          "form":{
+            "username":"update@user.com",
+            "displayname":"K"
+          },
+          "owner":"duckduckgoose"
+       }'::JSONB - '{form,updated}'::TEXT[])
+    ),
+    '{"pk": "username#update@user.com", "sk": "const#USER", "tk": "guid#duckduckgoose", "owner": "duckduckgoose"}'::JSONB,
+    'chelate Detect pk sk tk key changes 0_0_1'::TEXT
+  );
+  */
   SELECT * FROM finish();
 
 ROLLBACK;
-*/
+-- END;
