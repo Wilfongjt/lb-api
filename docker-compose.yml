@@ -1,6 +1,7 @@
 # Handy commands:
 # docker system prune -a    # remove all images and containers
-
+# [Network]
+# [links]
 version: '3'
 services:
   #############
@@ -20,15 +21,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_JWT_SECRET=${POSTGRES_JWT_SECRET}
       - POSTGRES_API_PASSWORD=${POSTGRES_API_PASSWORD}
-      #- LB_GUEST_PASSWORD=${LB_GUEST_PASSWORD}
       - POSTGRES_JWT_CLAIMS=${POSTGRES_JWT_CLAIMS}
-      #- LB _ENV=${LB _ENV}
-      #- API_GUEST_TOKEN=${API_GUEST_TOKEN}
-      #- API _USER=${API _USER}
-      #- API_PASSWORD=${API_PASSWORD}
-      #- POSTGRES _API_USER=${POSTGRES _API_USER}
-      #- API_SCOPE=${API_SCOPE}
-      #- LB_WODEN=${LB_WODEN}
+
     volumes:
       # anything in initdb directory is created in the database
       - "./one_db/sql:/docker-entrypoint-initdb.d"
@@ -57,18 +51,10 @@ services:
       - API_DB_CONFIG=${API_DB_CONFIG}
       - API_DB_USER_CONFIG=${API_DB_USER_CONFIG}
       - API_JWT_CLAIMS=${API_JWT_CLAIMS}
-      #- PGDATABASE=${PGDATABASE}
-      #- PG USER=${PG USER}
-      #- PG HOST=${PG HOST}
-      #- PG PORT=${PG PORT}
-      #- PG PASSWORD=${PG PASSWORD}
-      #- depAPI_DB_HOST=${API_DB_HOST}
-      #- xxxDATABASE_URL=postgresql://guest_authenticator:mysecretdatabasepassword@db:5433/one_db
-      #- xxxDATABASE_URL=postgres://guest_authenticator:mysecretdatabasepassword@$db:5433/one_db
-      #- DATABASE_URL=postgres://${API _USER}:${API_DB_PASSWORD}@${API_DB_HOST}:5433/${API_DB_DATABASE}
-      #- DATABASE_URL=postgres://user:pass@postgres:5432/db
     depends_on:
       - db
+    links:
+      - db:db
     #links:
     #  - "db"
     #restart: always

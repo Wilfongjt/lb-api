@@ -1,5 +1,5 @@
 \c one_db
-
+CREATE SCHEMA if not exists api_0_0_1;
 SET search_path TO api_0_0_1, base_0_0_1, public;
 
 /*

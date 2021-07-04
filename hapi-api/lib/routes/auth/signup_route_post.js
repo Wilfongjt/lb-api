@@ -33,6 +33,7 @@ module.exports = {
       // [Get a database client from request]
       client = req.pg;
       // [Get pk from request.payload]
+      //form = req.payload;
       form = req.payload;
 
       // [Insert User into the database]

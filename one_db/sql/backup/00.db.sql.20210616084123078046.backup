@@ -130,7 +130,7 @@ BEGIN
 if not exists(SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('one_db')) then
 CREATE DATABASE one_db;
 end if;
-END;
+-- END;
 $$ LANGUAGE plpgsql;
 
 ---------------

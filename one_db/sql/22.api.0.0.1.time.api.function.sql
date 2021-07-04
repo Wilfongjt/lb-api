@@ -1,5 +1,7 @@
-\c one_db
-SET search_path TO api_0_0_1, base_0_0_1, public;
+-- how to test a function with no parameters
+ 
+-- \c one_db
+-- SET search_path TO api_0_0_1, base_0_0_1, public;
 
 --=============================================================================
 -- TIME
@@ -17,7 +19,7 @@ SET search_path TO api_0_0_1, base_0_0_1, public;
 
 */
 
-
+/*
 CREATE OR REPLACE FUNCTION api_0_0_1.time() RETURNS JSONB
 AS $$
   declare _time timestamp;
@@ -31,3 +33,4 @@ $$ LANGUAGE plpgsql;
 
 grant EXECUTE on FUNCTION api_0_0_1.time() to api_guest;
 grant EXECUTE on FUNCTION api_0_0_1.time() to api_user;
+*/

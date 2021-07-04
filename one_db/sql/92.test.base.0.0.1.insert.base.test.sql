@@ -1,8 +1,7 @@
 
 \c one_db;
 
-SET search_path TO api_0_0_1, base_0_0_1, public;
-
+SET search_path TO base_0_0_1, public;
 
 
 /*

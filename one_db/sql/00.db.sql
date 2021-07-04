@@ -98,11 +98,9 @@ select
 --------------
 -- Environment: Read environment variables
 --------------
---\set lb _env `echo "'$LB _ENV'"`
+--\set lb _env `echo "'$LB _ENV
 \set postgres_jwt_secret `echo "'$POSTGRES_JWT_SECRET'"`
---\set postgres _api_user `echo "'$POSTGRES _API_USER'"`
---\set lb _guest_password `echo "'$LB _GUEST_PASSWORD'"`
---\set api_password `echo "'$API_PASSWORD'"`
+
 \set postgres_api_password `echo "'$POSTGRES_API_PASSWORD'"`
 
 \set postgres_jwt_claims     `echo "'$POSTGRES_JWT_CLAIMS'"`
@@ -110,26 +108,13 @@ select
 \set owner_id 'guid#0'
 
 select :postgres_jwt_claims as postgres_jwt_claims;
---select current_setting('app.postgres_jwt_claims')::JSONB ->> 'scope';
-
--- select :postgres _api_user as postgres _api_user;
 select :postgres_api_password as postgres_api_password;
-
---select :api_password as api_password;
 select :api_scope as api_scope;
 
 --------------
 -- DATABASE
 --------------
---Drop database if exists one_db ;
 
---do $$
---BEGIN
---if not exists(SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('one_db')) then
---  CREATE DATABASE one_db;
---end if;
---END;
---$$ LANGUAGE plpgsql;
 
 SELECT 'CREATE DATABASE one_db'
 WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'one_db')\gexec

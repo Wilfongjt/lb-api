@@ -108,3 +108,4 @@ BEGIN;
   SELECT * FROM finish();
 
 ROLLBACK;
+-- END;

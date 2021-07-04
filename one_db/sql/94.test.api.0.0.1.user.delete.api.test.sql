@@ -1,12 +1,10 @@
+
 \c one_db;
 
 SET search_path TO api_0_0_1, base_0_0_1, public;
 
-/*
-Delete
+-- Delete
 
-
-*/
 -------------------
 -- User_
 ------------------
@@ -98,17 +96,8 @@ insert into base_0_0_1.one (pk,sk,form,owner) values ('username#delete@user.com'
       '404',
       'User Delete  (user-token,"username#delete@user.com") 404 0_0_1'::TEXT
     );
-    -- 9  Delete by GUID
-/*
-    SELECT is (
-      api_0_0_1.user(
-        :user_token_3,
-        'guid#2720a5bd9-e669-41d4-b917-81212bc184a3'::TEXT
-      )::JSONB ->> 'status',
-      '404',
-      'User Delete  (user-token,"guid#2720a5bd9-e669-41d4-b917-81212bc184a3") 404 0_0_1'::TEXT
-    );
-*/
+
   SELECT * FROM finish();
 
 ROLLBACK;
+-- END;

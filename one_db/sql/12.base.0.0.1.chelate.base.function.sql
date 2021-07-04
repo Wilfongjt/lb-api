@@ -21,6 +21,18 @@ SET search_path TO base_0_0_1, base_0_0_1, public;
     identifier  --- +  |  |
     seperator -------- +  |
     specifier ------------+
+
+  Date: 202106
+  key is "const" || "guid" || <field-name>
+  compound is     "<key1>#<value1>+<key2>#<value2>"
+                    |    |  |     |  |   |  |
+    identifier  --- +    |  |     |  |   |  |
+    seperator ---------- +  |     |  |   |  |
+    value ------------------+     |  |   |  |
+    seperator2 ------------------ +  |   |  |
+    identifier ----------------------+   |  |
+    seperator ---------------------------+  |
+    value ----------------------------------+
 */
 
 CREATE OR REPLACE FUNCTION base_0_0_1.chelate(expected_keys JSONB, form JSONB) RETURNS JSONB
@@ -37,7 +49,7 @@ BEGIN
   -- user with client.insert
   -- make a chelate from expected_keys and form
   -- expected_keys eg {"pk":"username","sk":"const#USER", "tk":"*"}
-  -- expected_keys eg {"pk":"username","sk":"const#USER", "tk":"*"}
+  -- expected_keys eg {"pk":"asset_id+user_key","sk":"const#USER", "tk":"*"}
   -- check incomming values
   -- Validate expected_keys and form]
   if expected_keys is NULL or form is NULL then
@@ -49,20 +61,20 @@ BEGIN
   FOR _rec IN SELECT * FROM jsonb_each_text(expected_keys)
     LOOP
        _key := _rec.key;
-       _fld := _rec.value;
+       _fld := _rec.value; -- value is a field name
 
        if form ? _fld then
           -- Handle Simple Value as {<key-name>:<form.field-name>#<form.field-value>}]
-
           -- [Handle Simple Value]
           _rc := _rc || format('{"%s":"%s#%s"}',_key, _fld, form ->> _fld)::JSONB;
+
        elsif strpos(_fld, 'const#') = 1 then
           -- Handle Constant as {<key-name>:const#<constant-value>}]
           -- [Handle Constant ... passthrough]
           _rc := _rc || format('{"%s":"%s"}',_key, _fld)::JSONB;
        elsif strpos(_fld, 'guid#') = 1 then
           -- Handle GUID as {<key-name>:guid#<guid-value>}]
-          -- [Handle GUID...passthrough]
+          -- [Handle GUID...passthrough, guid is defined, so pass it through]
           _rc := _rc || format('{"%s":"%s"}',_key, _fld)::JSONB;
        elsif _fld = '*' then
           -- Handle Wildcard as {<key-name>:guid#<generated-guid-value>}]
