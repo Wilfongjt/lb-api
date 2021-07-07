@@ -39,7 +39,7 @@ import { ChelateUser } from './chelates/chelate_user.js';
 // [Create Example Routes]
 import root_route from './routes/examples/root_route.js'; // example
 import restricted_route from './routes/examples/restricted_route.js'; // example
-import time_route from './routes/examples/time_route.js'; // example
+//import time_route from './routes/examples/time_route.js'; // example
 
 //these need to be rewritten to use the /pg_one
 // [Signup and Sigin RoutesCreate User Route]
@@ -103,7 +103,7 @@ const api_routes = [
   // [Example Route restricted with JWT]
   restricted_route,
   // [Example Route to API]
-  time_route,
+  //time_route,
   // [Register Signin Route]
   signin_route_post,
   // [Register Signup Route]
