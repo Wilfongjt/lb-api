@@ -37,7 +37,7 @@ describe('Server Tests', () => {
     let path = '/';
     expect(paths.find(element => element === '/')).toBeTruthy();
     expect(paths.find(element => element === '/restricted')).toBeTruthy();
-    expect(paths.find(element => element === '/time')).toBeTruthy();
+    //expect(paths.find(element => element === '/time')).toBeTruthy();
 
   });
 
@@ -72,7 +72,7 @@ describe('Server Tests', () => {
     expect(res.result.status).toEqual('200');
     expect(res.result.msg).toEqual('OK');
   });
-
+  /*
   it('Connect /time, responds with 200', async () => {
     // guest token required for GET
     // pass form payload in headers for GET
@@ -95,6 +95,7 @@ describe('Server Tests', () => {
       expect(res.result.zone).toBeDefined();
 
   });
+  */
   // User
   /*
   it('/user POST, 200 OK', async () => {
